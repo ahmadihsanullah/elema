@@ -10,5 +10,8 @@ class Angkatan extends Model
     public $incrementing = true;
     public $timestamps = false;
     
+    public function kelas(){
+        return $this->hasMany(Kelas::class, 'id_angkatan', 'id');
+     }
 
 }
