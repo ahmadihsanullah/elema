@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Guru extends Model
 {
@@ -14,4 +15,8 @@ class Guru extends Model
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    public function mataPelajarans(): BelongsToMany{
+        return $this->belongsToMany(MataPelajaran::class, 'guru_mata_pelajarans', 'id_guru', 'id_mata_pelajaran');
+    }
 }
