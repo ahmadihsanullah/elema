@@ -17,11 +17,13 @@ class AngkatanResource extends Resource
 {
     protected static ?string $model = Angkatan::class;
     
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
     protected static ?string $navigationGroup = 'Akademi';
     
     protected static ?string $navigationLabel = 'Angkatan';
+
+    protected static ?int $navigationSort = 3;
 
     public static function getModelLabel(): string
     {
