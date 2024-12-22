@@ -67,6 +67,9 @@ class KelasResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('angkatan.tahun')
                     ->sortable(),
+                Tables\Columns\BadgeColumn::make('siswas_count')
+                    ->label('Jumlah Siswa')
+                    ->counts('siswas'),
             ])
             ->filters([
                 //

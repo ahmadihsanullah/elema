@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\KelasResource\RelationManagers;
 
+use App\Filament\Resources\SiswaResource;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -58,14 +59,19 @@ class SiswasRelationManager extends RelationManager
             ->filters([
                 Tables\Filters\SelectFilter::make('jenis_kelamin')
                     ->options([
-                        'Laki-laki' => 'Laki-laki',
-                        'Perempuan' => 'Perempuan',
+                        'l' => 'Laki-laki',
+                        'p' => 'Perempuan',
                     ]),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
+                Tables\Actions\Action::make('view_siswa')
+                    ->label('Detail Siswa')
+                    ->icon('heroicon-o-eye')
+                    ->action(fn($record) => $this->redirect(route('filament.admin.resources.siswas.edit', $record))),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
