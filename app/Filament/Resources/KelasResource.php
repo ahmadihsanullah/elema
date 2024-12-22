@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\KelasResource\Pages;
 use App\Filament\Resources\KelasResource\RelationManagers;
+use App\Filament\Resources\KelasResource\RelationManagers\SiswasRelationManager;
 use App\Models\Kelas;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -84,7 +85,7 @@ class KelasResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            SiswasRelationManager::class,
         ];
     }
 
