@@ -18,7 +18,22 @@ class SiswaResource extends Resource
 {
     protected static ?string $model = Siswa::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $navigationGroup = 'Akademi';
+    protected static ?int $navigationSort = 5;
+    
+    protected static ?string $navigationLabel = 'Siswa';
+
+    public static function getModelLabel(): string
+    {
+        return 'Siswa';
+    }
+    
+    public static function getPluralModelLabel(): string
+    {
+        return 'Siswa';
+    }
 
     public static function form(Form $form): Form
     {
@@ -57,6 +72,9 @@ class SiswaResource extends Resource
     {
         return $table
             ->columns([
+
+                Tables\Columns\TextColumn::make('index')
+                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('nis')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
@@ -79,8 +97,8 @@ class SiswaResource extends Resource
                         'warning' => fn($state) => $state === 'Teknik Audio Visual',
                         'danger' => fn($state) => $state === 'Administrasi Perkantoran',
                     ]),
-                    Tables\Columns\TextColumn::make('kelas.angkatan.tahun') 
-                        ->sortable(),
+                Tables\Columns\TextColumn::make('kelas.angkatan.tahun')
+                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('jurusan')
@@ -94,6 +112,7 @@ class SiswaResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
