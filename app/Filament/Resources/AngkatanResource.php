@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AngkatanResource\Pages;
 use App\Filament\Resources\AngkatanResource\RelationManagers;
+use App\Filament\Resources\AngkatanResource\RelationManagers\KelasRelationManager;
 use App\Models\Angkatan;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -67,7 +68,7 @@ class AngkatanResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            KelasRelationManager::class,
         ];
     }
 
