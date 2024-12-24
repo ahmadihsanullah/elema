@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\JurusanResource\Pages;
-use App\Filament\Resources\JurusanResource\RelationManagers;
-use App\Models\Jurusan;
+use App\Filament\Resources\GuruResource\Pages;
+use App\Filament\Resources\GuruResource\RelationManagers;
+use App\Models\Guru;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,40 +13,48 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class JurusanResource extends Resource
+class GuruResource extends Resource
 {
-    protected static ?string $model = Jurusan::class;
+    protected static ?string $model = Guru::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-library';
+    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static ?string $navigationLabel = 'Guru';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
-    
-    protected static ?string $navigationLabel = 'Jurusan';
-
+    protected static ?string $navigationGroup = 'Akademi';
     protected static ?int $navigationSort = 1;
 
     public static function getModelLabel(): string
     {
-        return 'Jurusan';
+        return 'Guru';
     }
     
     public static function getPluralModelLabel(): string
     {
-        return 'Jurusan';
+        return 'Guru';
     }
+
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
-                    ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('kode')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -54,9 +62,11 @@ class JurusanResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('kode')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
                     ->searchable(),
             ])
             ->filters([
@@ -64,6 +74,7 @@ class JurusanResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -82,9 +93,9 @@ class JurusanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListJurusans::route('/'),
-            'create' => Pages\CreateJurusan::route('/create'),
-            'edit' => Pages\EditJurusan::route('/{record}/edit'),
+            'index' => Pages\ListGurus::route('/'),
+            'create' => Pages\CreateGuru::route('/create'),
+            'edit' => Pages\EditGuru::route('/{record}/edit'),
         ];
     }
 }
