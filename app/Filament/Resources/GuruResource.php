@@ -20,8 +20,8 @@ class GuruResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationLabel = 'Guru';
 
-    protected static ?string $navigationGroup = 'Akademi';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Master Data';
+    protected static ?int $navigationSort = 2;
 
     public static function getModelLabel(): string
     {

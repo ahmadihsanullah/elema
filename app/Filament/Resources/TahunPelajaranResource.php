@@ -19,8 +19,8 @@ class TahunPelajaranResource extends Resource
     protected static ?string $model = TahunPelajaran::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
-    protected static ?string $navigationGroup = 'Pengaturan';
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Akademi';
+    protected static ?int $navigationSort = 4;
     
     protected static ?string $navigationLabel = 'Tahun Pelajaran';
 

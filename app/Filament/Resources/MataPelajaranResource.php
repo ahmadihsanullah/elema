@@ -19,11 +19,11 @@ class MataPelajaranResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Akademi';
+    protected static ?string $navigationGroup = 'Master Data';
     
     protected static ?string $navigationLabel = 'Mata Pelajaran';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     public static function getModelLabel(): string
     {
@@ -63,6 +63,7 @@ class MataPelajaranResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

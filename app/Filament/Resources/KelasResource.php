@@ -23,7 +23,7 @@ class KelasResource extends Resource
     protected static ?string $navigationGroup = 'Akademi';
     
     protected static ?string $navigationLabel = 'Kelas';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 1;
 
     public static function getModelLabel(): string
     {

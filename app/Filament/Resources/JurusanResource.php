@@ -19,11 +19,11 @@ class JurusanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'Akademi';
     
     protected static ?string $navigationLabel = 'Jurusan';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     public static function getModelLabel(): string
     {
