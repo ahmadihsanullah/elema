@@ -26,4 +26,9 @@ class JadwalPelajaran extends Model
     {
         return $this->belongsTo(GuruMataPelajaran::class, 'id_guru_mata_pelajaran', 'id');
     }
+
+    public function tahunPelajaran(): BelongsTo
+    {
+        return $this->belongsTo(TahunPelajaran::class, 'id_tahun_pelajaran', 'id');
+    }
 }
