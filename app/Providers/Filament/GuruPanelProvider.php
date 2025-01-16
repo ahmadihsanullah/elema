@@ -51,6 +51,8 @@ class GuruPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->login()
+            ->authGuard('teacher');
     }
 }
