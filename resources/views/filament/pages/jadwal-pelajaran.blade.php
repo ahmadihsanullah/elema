@@ -17,7 +17,7 @@
 
     <x-filament::section class="mt-6">
         <x-slot name="heading">
-            Daftar Jadwal Pelajaran
+            Daftar Jadwal Pelajaran Tahun {{ $tahunAktif->nama }}
         </x-slot>
 
         {{ $this->table }}

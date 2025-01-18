@@ -4,9 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\KelasResource\Pages;
 use App\Filament\Resources\KelasResource\RelationManagers;
+use App\Filament\Resources\KelasResource\RelationManagers\JadwalPelajaranRelationManager;
 use App\Filament\Resources\KelasResource\RelationManagers\SiswasRelationManager;
 use App\Models\Kelas;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -39,7 +41,8 @@ class KelasResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('kode')
+                Card::make()->schema([
+                    Forms\Components\TextInput::make('kode')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
@@ -52,6 +55,7 @@ class KelasResource extends Resource
                 Forms\Components\Select::make('id_angkatan')
                     ->required()
                     ->relationship('angkatan', 'tahun'),
+                ])->columns(2)
             ]);
     }
 
@@ -89,6 +93,7 @@ class KelasResource extends Resource
     {
         return [
             SiswasRelationManager::class,
+            JadwalPelajaranRelationManager::class
         ];
     }
 

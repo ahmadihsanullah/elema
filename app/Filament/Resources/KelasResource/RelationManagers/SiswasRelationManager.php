@@ -68,12 +68,10 @@ class SiswasRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\Action::make('view_siswa')
-                    ->label('Detail Siswa')
-                    ->icon('heroicon-o-eye')
+                    ->label('Edit')
+                    ->icon('heroicon-m-pencil-square')
                     ->action(fn($record) => $this->redirect(route('filament.admin.resources.siswas.edit', $record))),
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

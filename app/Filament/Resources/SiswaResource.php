@@ -6,6 +6,7 @@ use App\Filament\Resources\SiswaResource\Pages;
 use App\Filament\Resources\SiswaResource\RelationManagers;
 use App\Models\Siswa;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -39,7 +40,8 @@ class SiswaResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nis')
+                Card::make()->schema([
+                    Forms\Components\TextInput::make('nis')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
@@ -65,6 +67,7 @@ class SiswaResource extends Resource
                     ->getOptionLabelFromRecordUsing(function (Model $record) {
                         return $record->kode;
                     }),
+                ])->columns(2)
             ]);
     }
 

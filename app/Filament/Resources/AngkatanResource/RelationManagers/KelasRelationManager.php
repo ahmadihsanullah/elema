@@ -68,11 +68,10 @@ class KelasRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\Action::make('view_kelas')
-                    ->label('Detail Kelas')
+                    ->label('Edit')
                     ->icon('heroicon-o-eye')
                     ->action(fn($record) => $this->redirect(route('filament.admin.resources.kelas.edit', $record))),
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

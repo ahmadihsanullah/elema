@@ -6,6 +6,7 @@ use App\Filament\Resources\MataPelajaranResource\Pages;
 use App\Filament\Resources\MataPelajaranResource\RelationManagers;
 use App\Models\MataPelajaran;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -39,13 +40,15 @@ class MataPelajaranResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
+                Card::make()->schema([
+                    Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('kode')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord:true),
+                ])->columns(2)
             ]);
     }
 

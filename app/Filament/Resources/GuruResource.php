@@ -6,6 +6,7 @@ use App\Filament\Resources\GuruResource\Pages;
 use App\Filament\Resources\GuruResource\RelationManagers;
 use App\Models\Guru;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -39,7 +40,8 @@ class GuruResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('kode')
+                Card::make()->schema([
+                    Forms\Components\TextInput::make('kode')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
@@ -54,7 +56,8 @@ class GuruResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255), 
+                ])->columns(2)
             ]);
     }
 

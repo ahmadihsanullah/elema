@@ -7,6 +7,7 @@ use App\Filament\Resources\AngkatanResource\RelationManagers;
 use App\Filament\Resources\AngkatanResource\RelationManagers\KelasRelationManager;
 use App\Models\Angkatan;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -40,9 +41,11 @@ class AngkatanResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('tahun')
+                Card::make()->schema([
+                    Forms\Components\TextInput::make('tahun')
                     ->required()
                     ->unique(ignoreRecord: true),
+                ])
             ]);
     }
 

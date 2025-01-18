@@ -33,21 +33,21 @@ class JadwalPelajaran extends Page implements HasTable
     public $jadwalPelajaran = [];
     public $jadwalPelajaranToRemove = [];
 
+    public $tahunAktif;
     public function table(Table $table): Table
     {
         return $table
-            ->query(fn () => ModelJadwalPelajaran::whereHas('tahunPelajaran', function ($query) {
+            ->query(fn() => ModelJadwalPelajaran::whereHas('tahunPelajaran', function ($query) {
                 $query->where('aktif', true);
             })->with([
-                'kelas', 
-                'tahunPelajaran', 
-                'guruMataPelajaran.mataPelajaran', 
-                'guruMataPelajaran.guru'
-            ]))
+                        'kelas',
+                        'tahunPelajaran',
+                        'guruMataPelajaran.mataPelajaran',
+                        'guruMataPelajaran.guru'
+                    ]))
             ->columns([
                 TextColumn::make('kelas.nama')
                     ->label('Kelas')
-                    ->searchable()
                     ->sortable(),
                 TextColumn::make('hari')
                     ->label('Hari')
@@ -57,16 +57,22 @@ class JadwalPelajaran extends Page implements HasTable
                 TextColumn::make('mata_pelajaran')
                     ->label('Mata Pelajaran')
                     ->getStateUsing(function (ModelJadwalPelajaran $record) {
-                        return $record->guruMataPelajaran->mataPelajaran->kode . 
-                               ' (' . $record->guruMataPelajaran->guru->name . ')';
+                        return $record->guruMataPelajaran->mataPelajaran->kode .
+                            ' (' . $record->guruMataPelajaran->guru->name . ')';
                     })
-                    ->searchable(),
             ])
             ->filters([
                 SelectFilter::make('tahun_pelajaran')
                     ->label('Tahun Pelajaran')
                     ->relationship('tahunPelajaran', 'nama')
-                    ->options(TahunPelajaran::where('aktif', true)->pluck('nama', 'id')),
+                    ->options(TahunPelajaran::where('aktif', true)->pluck('nama', 'id'))
+                    ->default(function () {
+                        return TahunPelajaran::where('aktif', true)->first()?->id;
+                    })
+                    ->query(function ($query) {
+                        $tahunAktif = TahunPelajaran::where('aktif', true)->first();
+                        return $query->where('id_tahun_pelajaran', $tahunAktif?->id);
+                    }),
                 SelectFilter::make('kelas')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama'),
@@ -79,7 +85,7 @@ class JadwalPelajaran extends Page implements HasTable
                         'Kamis' => 'Kamis',
                         'Jumat' => 'Jumat',
                     ])
-                    ]);
+            ]);
     }
     public function getFormSchema(): array
     {
@@ -100,8 +106,8 @@ class JadwalPelajaran extends Page implements HasTable
                 ->label('Pilih Kelas')
                 ->options(function ($get) {
                     $tahunPelajaranId = $get('tahunPelajaran');
-                    return $tahunPelajaranId 
-                        ? Kelas::all()->pluck('nama', 'id')  
+                    return $tahunPelajaranId
+                        ? Kelas::all()->pluck('nama', 'id')
                         : [];
                 })
                 ->required()
@@ -135,28 +141,29 @@ class JadwalPelajaran extends Page implements HasTable
                     $kelasId = $get('kelas');
                     $tahunPelajaranId = $get('tahunPelajaran');
                     $hari = $get('hari');
-                    
-                    if (!$kelasId || !$tahunPelajaranId || !$hari) return [];
+
+                    if (!$kelasId || !$tahunPelajaranId || !$hari)
+                        return [];
 
                     // Ambil guru mata pelajaran yang belum terjadwal di hari tersebut
                     return GuruMataPelajaran::whereNotIn('id', function ($query) use ($kelasId, $tahunPelajaranId, $hari) {
                         $query->select('id_guru_mata_pelajaran')
-                              ->from('jadwal_pelajarans')
-                              ->where('id_kelas', $kelasId)
-                              ->where('id_tahun_pelajaran', $tahunPelajaranId)
-                              ->where('hari', $hari);
+                            ->from('jadwal_pelajarans')
+                            ->where('id_kelas', $kelasId)
+                            ->where('id_tahun_pelajaran', $tahunPelajaranId)
+                            ->where('hari', $hari);
                     })
-                    ->with(['mataPelajaran', 'guru'])
-                    ->get()
-                    ->mapWithKeys(function ($item) {
+                        ->with(['mataPelajaran', 'guru'])
+                        ->get()
+                        ->mapWithKeys(function ($item) {
                         return [
-                            $item->id => $item->mataPelajaran->kode . 
-                                         ' - ' . $item->guru->name
+                            $item->id => $item->mataPelajaran->kode .
+                                ' - ' . $item->guru->name
                         ];
                     });
                 })
                 ->required(),
-                
+
 
             Select::make('jadwalPelajaranToRemove')
                 ->label('Hapus Mata Pelajaran')
@@ -165,8 +172,9 @@ class JadwalPelajaran extends Page implements HasTable
                     $kelasId = $get('kelas');
                     $tahunPelajaranId = $get('tahunPelajaran');
                     $hari = $get('hari');
-                    
-                    if (!$kelasId || !$tahunPelajaranId || !$hari) return [];
+
+                    if (!$kelasId || !$tahunPelajaranId || !$hari)
+                        return [];
 
                     return ModelJadwalPelajaran::where('id_kelas', $kelasId)
                         ->where('id_tahun_pelajaran', $tahunPelajaranId)
@@ -175,8 +183,8 @@ class JadwalPelajaran extends Page implements HasTable
                         ->get()
                         ->mapWithKeys(function ($item) {
                             return [
-                                $item->id => $item->guruMataPelajaran->mataPelajaran->kode . 
-                                             ' - ' . $item->guruMataPelajaran->guru->name
+                                $item->id => $item->guruMataPelajaran->mataPelajaran->kode .
+                                    ' - ' . $item->guruMataPelajaran->guru->name
                             ];
                         });
                 }),
@@ -190,7 +198,7 @@ class JadwalPelajaran extends Page implements HasTable
             'tahunPelajaran' => 'required|exists:tahun_pelajarans,id',
             'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat',
         ]);
-    
+
         DB::beginTransaction();
         try {
             // Tambah jadwal baru
@@ -204,25 +212,25 @@ class JadwalPelajaran extends Page implements HasTable
                     ]);
                 }
             }
-    
+
             // Hapus jadwal yang dipilih
             if (!empty($this->jadwalPelajaranToRemove)) {
                 ModelJadwalPelajaran::whereIn('id', $this->jadwalPelajaranToRemove)->delete();
             }
-    
+
             DB::commit();
-    
+
             Notification::make()
                 ->success()
                 ->title('Berhasil')
                 ->body('Jadwal pelajaran berhasil diperbarui.')
                 ->send();
-    
+
             // Refresh the table
             $this->dispatch('refresh-table');
         } catch (\Exception $e) {
             DB::rollBack();
-    
+
             Notification::make()
                 ->danger()
                 ->title('Gagal')
@@ -233,6 +241,7 @@ class JadwalPelajaran extends Page implements HasTable
 
     public function mount()
     {
+        $this->tahunAktif = TahunPelajaran::where('aktif', true)->first();
         $this->form->fill();
     }
 }

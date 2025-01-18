@@ -6,6 +6,7 @@ use App\Filament\Resources\JurusanResource\Pages;
 use App\Filament\Resources\JurusanResource\RelationManagers;
 use App\Models\Jurusan;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -39,14 +40,16 @@ class JurusanResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
-                    ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                Forms\Components\TextInput::make('kode')
-                    ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
+                Card::make()->schema([
+                    Forms\Components\TextInput::make('nama')
+                        ->required()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true),
+                    Forms\Components\TextInput::make('kode')
+                        ->required()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true),
+                ])->columns(2)
             ]);
     }
 
