@@ -2,18 +2,23 @@
 
 namespace App\Filament\Guru\Pages;
 
-use App\Models\GuruMataPelajaran;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use App\Models\TahunPelajaran;
 use App\Models\JadwalPelajaran;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Notifications\Notification;
 
-class ListMataPelajaran extends Page
+class ListMataPelajaran extends Page implements HasActions
 {
+    use InteractsWithActions;
+
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
-
+    
     protected static ?string $title = 'Mata Pelajaran Saya';
-
+    
     protected static string $view = 'filament.guru.pages.list-mata-pelajaran';
 
     public $mataPelajaran = [];
@@ -23,44 +28,49 @@ class ListMataPelajaran extends Page
         $guru = Auth::user();
         $tahunPelajaranAktif = TahunPelajaran::where('aktif', true)->first();
 
-        $this->mataPelajaran = GuruMataPelajaran::where('id_guru', $guru->id)
-            ->with(['mataPelajaran', 'jadwalPelajaran.kelas'])
+        // Kelompokkan jadwal berdasarkan mata pelajaran
+        $jadwalByMataPelajaran = JadwalPelajaran::where('id_tahun_pelajaran', $tahunPelajaranAktif->id)
+            ->whereHas('guruMataPelajaran', function($query) use ($guru) {
+                $query->where('id_guru', $guru->id);
+            })
+            ->with([
+                'guruMataPelajaran.mataPelajaran', 
+                'guruMataPelajaran.guru', 
+                'kelas'
+            ])
             ->get()
-            ->flatMap(function ($guruMataPelajaran) use ($tahunPelajaranAktif) {
-                return $guruMataPelajaran->jadwalPelajaran
-                    ->where('id_tahun_pelajaran', $tahunPelajaranAktif->id)
-                    ->map(function ($jadwal) use ($guruMataPelajaran) {
-                        return [
-                            'id' => $jadwal->id,
-                            'mata_pelajaran' => $guruMataPelajaran->mataPelajaran->nama,
-                            'kelas' => $jadwal->kelas->nama,
-                            'hari' => $jadwal->hari,
-                        ];
-                    });
-            })
-            // Group by mata pelajaran and kelas
-            ->groupBy(['mata_pelajaran', 'kelas'])
-            ->map(function ($kelasGroups, $mataPelajaran) {
-                $result = [];
-                foreach ($kelasGroups as $kelas => $items) {
-                    $result[] = [
-                        'id' => $items->first()['id'], // Use the first jadwal's ID
-                        'mata_pelajaran' => $mataPelajaran,
-                        'kelas' => $kelas,
-                        'hari' => $items->pluck('hari')->unique()->implode(', '),
-                        'jadwal_count' => $items->count()
+            ->groupBy('guruMataPelajaran.mataPelajaran.id');
+
+        // Transform data untuk view
+        $this->mataPelajaran = $jadwalByMataPelajaran->map(function($jadwals) {
+            // Ambil informasi mata pelajaran dari jadwal pertama di group
+            $firstJadwal = $jadwals->first();
+            $mataPelajaran = $firstJadwal->guruMataPelajaran->mataPelajaran;
+            $guru = $firstJadwal->guruMataPelajaran->guru;
+
+            return [
+                'mata_pelajaran_id' => $mataPelajaran->id,
+                'mata_pelajaran' => $mataPelajaran->nama,
+                'guru' => $guru->name,
+                'jadwals' => $jadwals->map(function($jadwal) {
+                    return [
+                        'jadwal_id' => $jadwal->id,
+                        'kelas' => $jadwal->kelas->nama,
+                        'hari' => $jadwal->hari,
                     ];
-                }
-                return $result;
-            })
-            // Flatten the nested array
-            ->flatten(1)
-            ->values()
-            ->toArray();
+                })
+            ];
+        })->values();
     }
-    public function pilihMataPelajaran($jadwalId)
+
+    public function buatMateriAction($mataPelajaranId)
     {
-        // Nanti akan digunakan untuk navigasi ke halaman sesi
-        // Redirect atau open modal untuk membuat sesi
+        return Action::make('buatMateri')
+            ->label('Buat Materi')
+            ->color('primary')
+            ->action(function () use ($mataPelajaranId) {
+                // Redirect ke halaman buat materi dengan parameter mata pelajaran
+                return redirect()->route('filament.guru.pages.buat-materi', ['mataPelajaranId' => $mataPelajaranId]);
+            });
     }
 }

@@ -63,16 +63,16 @@ class JadwalPelajaran extends Page implements HasTable
             ])
             ->filters([
                 SelectFilter::make('tahun_pelajaran')
-                    ->label('Tahun Pelajaran')
-                    ->relationship('tahunPelajaran', 'nama')
-                    ->options(TahunPelajaran::where('aktif', true)->pluck('nama', 'id'))
-                    ->default(function () {
-                        return TahunPelajaran::where('aktif', true)->first()?->id;
-                    })
-                    ->query(function ($query) {
-                        $tahunAktif = TahunPelajaran::where('aktif', true)->first();
-                        return $query->where('id_tahun_pelajaran', $tahunAktif?->id);
-                    }),
+                ->label('Tahun Pelajaran')
+                ->relationship('tahunPelajaran', 'nama')
+                ->options(TahunPelajaran::where('aktif', true)->pluck('nama', 'id'))
+                ->default(function () {
+                    return TahunPelajaran::where('aktif', true)->first()?->id;
+                })
+                ->query(function ($query) {
+                    $tahunAktif = TahunPelajaran::where('aktif', true)->first();
+                    return $query->where('id_tahun_pelajaran', $tahunAktif?->id);
+                }),
                 SelectFilter::make('kelas')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama'),
