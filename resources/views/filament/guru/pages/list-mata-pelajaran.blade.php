@@ -1,7 +1,5 @@
 <x-filament-panels::page>
     <div class="space-y-6">
-        <h2 class="text-xl font-semibold dark:text-white">Mata Pelajaran yang Anda Ajar</h2>
-        
         @if(count($mataPelajaran) > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($mataPelajaran as $mapel)
@@ -20,7 +18,7 @@
                         </div>
                         <div class="mb-3">
                             <button 
-                                wire:click="buatMateriAction({{ $mapel['mata_pelajaran_id'] }})"
+                                wire:click="KelolaJadwal('{{ $mapel['slug_guru_mapel']  }}')"
                                 class="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-600 text-sm"
                             >
                                 Kelola Mapel

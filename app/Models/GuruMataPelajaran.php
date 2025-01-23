@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class GuruMataPelajaran extends Model
 {
@@ -12,6 +13,15 @@ class GuruMataPelajaran extends Model
     public $incrementing = true; // Menggunakan auto-increment untuk kolom 'id'
     public $timestamps = false; 
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Mengisi slug secara otomatis
+            $model->slug = Str::random(10);
+        });
+    }
     public function guru(): BelongsTo{
         return $this->belongsTo(Guru::class, 'id_guru');
     }
