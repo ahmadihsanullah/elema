@@ -11,5 +11,6 @@ class KelolaMataPelajaran extends Page
 
     protected static string $view = 'filament.guru.pages.kelola-mata-pelajaran';
     protected static bool $shouldRegisterNavigation = false;
+    protected static ?string $title = 'Kelola Mata Pelajaran';
     protected static ?string $slug = 'mata-pelajaran/{slugGuruMapel}'; // Custom URL slug
 }
