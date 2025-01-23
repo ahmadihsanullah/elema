@@ -57,9 +57,12 @@ class JadwalPelajaran extends Page implements HasTable
                 TextColumn::make('mata_pelajaran')
                     ->label('Mata Pelajaran')
                     ->getStateUsing(function (ModelJadwalPelajaran $record) {
-                        return $record->guruMataPelajaran->mataPelajaran->kode .
+                        return $record->guruMataPelajaran->mataPelajaran->nama .
                             ' (' . $record->guruMataPelajaran->guru->name . ')';
                     })
+            ])
+            ->actions([
+                \Filament\Tables\Actions\DeleteAction::make(),
             ])
             ->filters([
                 SelectFilter::make('tahun_pelajaran')
@@ -84,9 +87,11 @@ class JadwalPelajaran extends Page implements HasTable
                         'Rabu' => 'Rabu',
                         'Kamis' => 'Kamis',
                         'Jumat' => 'Jumat',
+                        'Sabtu' => 'Sabtu',
                     ])
             ]);
     }
+    
     public function getFormSchema(): array
     {
         return [
@@ -96,7 +101,6 @@ class JadwalPelajaran extends Page implements HasTable
                 ->required()
                 ->live()
                 ->afterStateUpdated(function (callable $set) {
-                    $set('kelas', null);
                     $set('hari', null);
                     $set('jadwalPelajaran', []);
                     $set('jadwalPelajaranToRemove', []);
@@ -126,6 +130,7 @@ class JadwalPelajaran extends Page implements HasTable
                     'Rabu' => 'Rabu',
                     'Kamis' => 'Kamis',
                     'Jumat' => 'Jumat',
+                    'Sabtu' => 'Sabtu',
                 ])
                 ->required()
                 ->live()
@@ -157,7 +162,7 @@ class JadwalPelajaran extends Page implements HasTable
                         ->get()
                         ->mapWithKeys(function ($item) {
                         return [
-                            $item->id => $item->mataPelajaran->kode .
+                            $item->id => $item->mataPelajaran->nama .
                                 ' - ' . $item->guru->name
                         ];
                     });
@@ -196,7 +201,7 @@ class JadwalPelajaran extends Page implements HasTable
         $this->validate([
             'kelas' => 'required|exists:kelas,id',
             'tahunPelajaran' => 'required|exists:tahun_pelajarans,id',
-            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat',
+            'hari' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu',
         ]);
 
         DB::beginTransaction();

@@ -50,7 +50,7 @@ class GuruMataPelajaran extends Page implements HasTable
                     })
                     ->badge()
                     ->color('primary')
-                    ->separator(', '),
+                    ->separator(', ')
             ]);
     }
 

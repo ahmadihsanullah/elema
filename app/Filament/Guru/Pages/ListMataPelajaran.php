@@ -63,14 +63,14 @@ class ListMataPelajaran extends Page implements HasActions
         })->values();
     }
 
-    public function buatMateriAction($mataPelajaranId)
-    {
-        return Action::make('buatMateri')
-            ->label('Buat Materi')
-            ->color('primary')
-            ->action(function () use ($mataPelajaranId) {
-                // Redirect ke halaman buat materi dengan parameter mata pelajaran
-                return redirect()->route('filament.guru.pages.buat-materi', ['mataPelajaranId' => $mataPelajaranId]);
-            });
-    }
+    public function kelolaMataPelajaran($mataPelajaranId)
+{
+    return Action::make('kelolaMataPelajaran')
+        ->label('Kelola Mata Pelajaran')
+        ->color('primary')
+        ->action(function () use ($mataPelajaranId) {
+            // Redirect ke halaman detail mata pelajaran dengan parameter ID
+            return redirect()->route('filament.guru.pages.detail-mata-pelajaran', ['mataPelajaranId' => $mataPelajaranId]);
+        });
+}
 }
