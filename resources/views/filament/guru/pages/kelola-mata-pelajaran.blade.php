@@ -11,11 +11,11 @@
         </x-filament::button>
     </x-filament::section>
 
-    <x-filament::section class="mt-6">
-        <x-slot name="heading">
+    {{-- <x-filament::section class="mt-6">
+        {{-- <x-slot name="heading"> --}}
             {{-- Daftar Jadwal Pelajaran Tahun {{ $tahunAktif->nama ?? '' }} --}}
-        </x-slot>
+        {{-- </x-slot> --}}
 
         {{-- {{ $this->table }} --}}
-    </x-filament::section>
+    {{-- </x-filament::section> --}} 
 </x-filament-panels::page>
