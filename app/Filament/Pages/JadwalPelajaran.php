@@ -15,6 +15,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Illuminate\Support\Facades\DB;
 
 class JadwalPelajaran extends Page implements HasTable
@@ -40,11 +42,11 @@ class JadwalPelajaran extends Page implements HasTable
             ->query(fn() => ModelJadwalPelajaran::whereHas('tahunPelajaran', function ($query) {
                 $query->where('aktif', true);
             })->with([
-                        'kelas',
-                        'tahunPelajaran',
-                        'guruMataPelajaran.mataPelajaran',
-                        'guruMataPelajaran.guru'
-                    ]))
+                'kelas',
+                'tahunPelajaran',
+                'guruMataPelajaran.mataPelajaran',
+                'guruMataPelajaran.guru'
+            ]))
             ->columns([
                 TextColumn::make('kelas.nama')
                     ->label('Kelas')
@@ -59,23 +61,23 @@ class JadwalPelajaran extends Page implements HasTable
                     ->getStateUsing(function (ModelJadwalPelajaran $record) {
                         return $record->guruMataPelajaran->mataPelajaran->nama .
                             ' (' . $record->guruMataPelajaran->guru->name . ')';
+                    }),
+                TextColumn::make('tahun_pelajaran')
+                    ->label("Tahun Pelajaran")
+                    ->getStateUsing(function (ModelJadwalPelajaran $record) {
+                        return $record->tahunPelajaran->nama;
                     })
             ])
             ->actions([
                 \Filament\Tables\Actions\DeleteAction::make(),
             ])
+            ->bulkActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make()
+                    ->label('Hapus Jadwal Pelajaran'),
+                ])
+            ])
             ->filters([
-                SelectFilter::make('tahun_pelajaran')
-                ->label('Tahun Pelajaran')
-                ->relationship('tahunPelajaran', 'nama')
-                ->options(TahunPelajaran::where('aktif', true)->pluck('nama', 'id'))
-                ->default(function () {
-                    return TahunPelajaran::where('aktif', true)->first()?->id;
-                })
-                ->query(function ($query) {
-                    $tahunAktif = TahunPelajaran::where('aktif', true)->first();
-                    return $query->where('id_tahun_pelajaran', $tahunAktif?->id);
-                }),
                 SelectFilter::make('kelas')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama'),
@@ -91,7 +93,7 @@ class JadwalPelajaran extends Page implements HasTable
                     ])
             ]);
     }
-    
+
     public function getFormSchema(): array
     {
         return [
@@ -161,11 +163,11 @@ class JadwalPelajaran extends Page implements HasTable
                         ->with(['mataPelajaran', 'guru'])
                         ->get()
                         ->mapWithKeys(function ($item) {
-                        return [
-                            $item->id => $item->mataPelajaran->nama .
-                                ' - ' . $item->guru->name
-                        ];
-                    });
+                            return [
+                                $item->id => $item->mataPelajaran->nama .
+                                    ' - ' . $item->guru->name
+                            ];
+                        });
                 })
                 ->required(),
 

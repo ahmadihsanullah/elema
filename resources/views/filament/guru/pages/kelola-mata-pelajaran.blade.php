@@ -46,7 +46,7 @@
 
         <!-- Daftar sesi -->
         <div class="border border-gray-300 dark:border-gray-600 p-4 rounded-lg shadow">
-            <h2 class="text-xl font-semibold">Mata Pelajaran: Matematika</h2>
+            <h2 class="text-xl font-semibold">Mata Pelajaran: {{ $mataPelajaran }}</h2>
             <div class="flex justify-between items-center">
                 <button class="text-blue-500" onclick="toggleDropdown('dropdownMath')">▼</button>
             </div>
