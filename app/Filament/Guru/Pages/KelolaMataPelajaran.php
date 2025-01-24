@@ -5,6 +5,8 @@ namespace App\Filament\Guru\Pages;
 use App\Models\GuruMataPelajaran;
 use Filament\Pages\Page;
 use App\Models\MataPelajaran;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Table;
 
 class KelolaMataPelajaran extends Page
 {
@@ -26,5 +28,31 @@ class KelolaMataPelajaran extends Page
             abort(404);
         }
         $this->mataPelajaran = $guruMapel->mataPelajaran->nama;
+    }
+
+    public function getFormSchema(): array
+    {
+        return [
+            TextInput::make('tahunPelajaran')
+                ->label('Sesi Belajar')
+                ->required()
+          
+        ];
+    }
+
+    public function table(Table $table): Table
+    {
+        // return $table
+            // ->query(fn () => GuruMataPelajaran::with('guru'))
+            // ->columns([
+            //     TextColumn::make('mata_pelajaran_list')
+            //         ->label('Mata Pelajaran')
+            //         ->getStateUsing(function (GuruMataPelajaran $record) {
+            //             return $record->mataPelajaran->nama;
+            //         })
+            //         ->badge()
+            //         ->color('primary')
+            //         ->separator(', ')
+            // ]);
     }
 }
