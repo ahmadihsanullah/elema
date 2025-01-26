@@ -1,5 +1,8 @@
 <x-filament-panels::page>
     <x-filament::section>
+           <p>{{ $mataPelajaran }}</p> 
+    </x-filament::section>
+    <x-filament::section>
         <x-slot name="heading">
             Tambah Sesi Pelajaran
         </x-slot>
@@ -11,11 +14,10 @@
         </x-filament::button>
     </x-filament::section>
 
-    {{-- <x-filament::section class="mt-6">
-        {{-- <x-slot name="heading"> --}}
-            {{-- Daftar Jadwal Pelajaran Tahun {{ $tahunAktif->nama ?? '' }} --}}
-        {{-- </x-slot> --}}
-
-        {{-- {{ $this->table }} --}}
-    {{-- </x-filament::section> --}} 
+     <x-filament::section class="mt-6">
+         <x-slot name="heading"> 
+             Daftar Sesi Belajar
+         </x-slot> 
+         {{ $this->table }} 
+     </x-filament::section>  
 </x-filament-panels::page>

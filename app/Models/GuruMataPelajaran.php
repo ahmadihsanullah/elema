@@ -35,4 +35,7 @@ class GuruMataPelajaran extends Model
         return $this->hasMany(JadwalPelajaran::class, 'id_guru_mata_pelajaran', 'id');
     }
 
+    public function sesiBelajar(): HasMany{
+        return $this->hasMany(SesiBelajar::class, 'id_guru_mata_pelajaran', 'id');
+    }
 }
