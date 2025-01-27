@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers;
+
+use Filament\Forms;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+
+class MateriRelationManager extends RelationManager
+{
+    protected static string $relationship = 'materi';
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Card::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('judul')
+                            ->required()
+                            ->maxLength(255),
+                        TinyEditor::make('deskripsi')
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsVisibility('public')
+                            ->fileAttachmentsDirectory('uploads')
+                    ])
+            ]);
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->recordTitleAttribute('judul')
+            ->columns([
+                Tables\Columns\TextColumn::make('judul'),
+            ])
+            ->filters([
+                //
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+}

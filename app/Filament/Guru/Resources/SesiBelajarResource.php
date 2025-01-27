@@ -4,10 +4,12 @@ namespace App\Filament\Guru\Resources;
 
 use App\Filament\Guru\Resources\SesiBelajarResource\Pages;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers;
+use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\MateriRelationManager;
 use App\Models\GuruMataPelajaran;
 use App\Models\MataPelajaran;
 use App\Models\SesiBelajar;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -29,17 +31,20 @@ class SesiBelajarResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('judul')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('id_guru_mata_pelajaran')
-                    ->label("Mata Pelajaran")
-                    ->options(GuruMataPelajaran::where('id_guru', Auth::user()->id)
-                        ->get()
-                        ->map(function ($record) { 
-                            return [$record->id => $record->mataPelajaran->nama];
-                        }))
-                    ->required()
+                Card::make()->
+                    schema([
+                        Forms\Components\TextInput::make('judul')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Select::make('id_guru_mata_pelajaran')
+                            ->label("Mata Pelajaran")
+                            ->options(GuruMataPelajaran::where('id_guru', Auth::user()->id)
+                                ->get()
+                                ->map(function ($record) { 
+                                    return [$record->id => $record->mataPelajaran->nama];
+                                }))
+                            ->required()
+                    ])
             ]);
     }
 
@@ -73,7 +78,7 @@ class SesiBelajarResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MateriRelationManager::class
         ];
     }
 

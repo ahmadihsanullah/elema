@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class SesiBelajar extends Model
@@ -29,5 +30,9 @@ class SesiBelajar extends Model
 
     public function guruMataPelajaran(): BelongsTo{
         return $this->belongsTo(GuruMataPelajaran::class, 'id_guru_mata_pelajaran', 'id');
+    }
+
+    public function materi():HasOne{
+        return $this->hasOne(Materi::class, 'id_sesi_belajar', 'id');
     }
 }
