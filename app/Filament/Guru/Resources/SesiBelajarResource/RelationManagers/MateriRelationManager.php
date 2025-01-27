@@ -29,7 +29,7 @@ class MateriRelationManager extends RelationManager
                         TinyEditor::make('deskripsi')
                             ->fileAttachmentsDisk('public')
                             ->fileAttachmentsVisibility('public')
-                            ->fileAttachmentsDirectory('uploads')
+                            ->fileAttachmentsDirectory('gambarmateri')
                     ])
             ]);
     }

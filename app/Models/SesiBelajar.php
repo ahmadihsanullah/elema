@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
@@ -34,5 +35,9 @@ class SesiBelajar extends Model
 
     public function materi():HasOne{
         return $this->hasOne(Materi::class, 'id_sesi_belajar', 'id');
+    }
+
+    public function fileMateris():HasMany{
+        return $this->hasMany(FileMateri::class, 'id_sesi_belajar', 'id');
     }
 }

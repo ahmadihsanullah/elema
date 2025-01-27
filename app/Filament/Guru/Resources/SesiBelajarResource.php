@@ -4,6 +4,7 @@ namespace App\Filament\Guru\Resources;
 
 use App\Filament\Guru\Resources\SesiBelajarResource\Pages;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers;
+use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\FileMaterisRelationManager;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\MateriRelationManager;
 use App\Models\GuruMataPelajaran;
 use App\Models\MataPelajaran;
@@ -78,7 +79,8 @@ class SesiBelajarResource extends Resource
     public static function getRelations(): array
     {
         return [
-            MateriRelationManager::class
+            MateriRelationManager::class,
+            FileMaterisRelationManager::class
         ];
     }
 
