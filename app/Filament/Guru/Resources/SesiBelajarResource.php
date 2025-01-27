@@ -4,22 +4,27 @@ namespace App\Filament\Guru\Resources;
 
 use App\Filament\Guru\Resources\SesiBelajarResource\Pages;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers;
+use App\Models\GuruMataPelajaran;
+use App\Models\MataPelajaran;
 use App\Models\SesiBelajar;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class SesiBelajarResource extends Resource
 {
     protected static ?string $model = SesiBelajar::class;
 
     protected static bool $shouldRegisterNavigation = true;
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+   
+
     public static function form(Form $form): Form
     {
         return $form
@@ -27,12 +32,14 @@ class SesiBelajarResource extends Resource
                 Forms\Components\TextInput::make('judul')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
+                Forms\Components\Select::make('id_guru_mata_pelajaran')
+                    ->label("Mata Pelajaran")
+                    ->options(GuruMataPelajaran::where('id_guru', Auth::user()->id)
+                        ->get()
+                        ->map(function ($record) { 
+                            return [$record->id => $record->mataPelajaran->nama];
+                        }))
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('id_guru_mata_pelajaran')
-                    ->required()
-                    ->numeric(),
             ]);
     }
 
@@ -42,25 +49,19 @@ class SesiBelajarResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('judul')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('guruMataPelajaran.mataPelajaran.nama')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('id_guru_mata_pelajaran')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                ->label('Kelola Sesi'),
+                Tables\Actions\DeleteAction::make()
+                ->label('Hapus Sesi')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -81,7 +82,7 @@ class SesiBelajarResource extends Resource
         return [
             'index' => Pages\ListSesiBelajars::route('/'),
             'create' => Pages\CreateSesiBelajar::route('/create'),
-            'edit' => Pages\EditSesiBelajar::route('/{record}/edit')
+            'edit' => Pages\EditSesiBelajar::route('/{record:slug}/edit')
         ];
     }
 }

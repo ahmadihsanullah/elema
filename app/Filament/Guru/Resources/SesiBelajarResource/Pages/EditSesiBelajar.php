@@ -11,14 +11,15 @@ class EditSesiBelajar extends EditRecord
 {
     protected static string $resource = SesiBelajarResource::class;
 
-    public function mount(int|string $record): void {
-        $this->record = SesiBelajar::findOrFail($record);
-    }
-
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            // Actions\DeleteAction::make(),
         ];
+    }
+
+    public function getHeading(): string
+    {
+        return 'Kelola Sesi Belajar';
     }
 }

@@ -22,6 +22,11 @@ class SesiBelajar extends Model
         });
     }
 
+    public function getRouteKeyName()
+    {
+        return 'slug'; // Menentukan 'slug' sebagai key untuk URL
+    }
+
     public function guruMataPelajaran(): BelongsTo{
         return $this->belongsTo(GuruMataPelajaran::class, 'id_guru_mata_pelajaran', 'id');
     }
