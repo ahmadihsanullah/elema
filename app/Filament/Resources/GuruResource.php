@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\GuruResource\Pages;
 use App\Filament\Resources\GuruResource\RelationManagers;
+use App\Filament\Resources\GuruResource\RelationManagers\MataPelajaransRelationManager;
 use App\Models\Guru;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
@@ -89,7 +90,7 @@ class GuruResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MataPelajaransRelationManager::class
         ];
     }
 
