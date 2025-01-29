@@ -11,7 +11,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class MateriRelationManager extends RelationManager
 {
@@ -26,7 +25,7 @@ class MateriRelationManager extends RelationManager
                         Forms\Components\TextInput::make('judul')
                             ->required()
                             ->maxLength(255),
-                        TinyEditor::make('deskripsi')
+                        RichEditor::make('deskripsi')
                             ->fileAttachmentsDisk('public')
                             ->fileAttachmentsVisibility('public')
                             ->fileAttachmentsDirectory('gambarmateri')

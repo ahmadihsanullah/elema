@@ -57,8 +57,8 @@ class SesiBelajarResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('guruMataPelajaran.mataPelajaran.nama')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+
             ])
             ->filters([
                 //

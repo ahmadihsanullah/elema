@@ -12,7 +12,6 @@ class SesiBelajar extends Model
 {
     protected $primaryKey = 'id'; 
     public $incrementing = true; 
-    public $timestamps = false; 
 
     public static function boot()
     {
