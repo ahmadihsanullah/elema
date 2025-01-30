@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('kuis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_sesi_belajar')->constrained('sesi_belajars', 'id')->onDelete('cascade');
+            $table->foreignId('id_sesi_belajar')->nullable(true)->constrained('sesi_belajars', 'id')->onDelete('cascade');
             $table->string('judul')->nullable(false);
             $table->text('deskripsi')->nullable(true);
             $table->boolean('aktif')->default(false);
-            $table->datetime('durasi')->nullable(true);
+            $table->integer('durasi')->nullable(true);
             $table->datetime('waktu_mulai')->nullable(true);
             $table->datetime('waktu_selesai')->nullable(true);
             $table->boolean('acak_soal')->default(false);
-            $table->boolean('nilai_minimal')->default(false);
+            $table->float('nilai_minimal')->default(0);
             $table->string('slug')->nullable(false);
             $table->timestamps();
         });
