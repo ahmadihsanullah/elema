@@ -44,4 +44,8 @@ class SesiBelajar extends Model
     public function tugas(): HasMany{
         return $this->hasMany(Tugas::class, "id_sesi_belajar", "id");
     }
+
+    public function kuis(): HasMany{
+        return $this->hasMany(Kuis::class, "id_sesi_belajar", "id");
+    }
 }
