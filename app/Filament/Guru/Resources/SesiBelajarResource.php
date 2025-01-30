@@ -6,10 +6,13 @@ use App\Filament\Guru\Resources\SesiBelajarResource\Pages;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\FileMaterisRelationManager;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\MateriRelationManager;
+use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\TugasRelationManager;
 use App\Models\GuruMataPelajaran;
 use App\Models\MataPelajaran;
 use App\Models\SesiBelajar;
+use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -64,10 +67,15 @@ class SesiBelajarResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('review')
+                ->label('Review Sesi')
+                ->icon('heroicon-o-eye') // Ikon untuk action review
+                // ->url(fn (SesiBelajar $record) => route('review.sesi-belajar', $record)) // Arahkan ke halaman review
+                ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make()
                 ->label('Kelola Sesi'),
                 Tables\Actions\DeleteAction::make()
-                ->label('Hapus Sesi')
+                ->label('Hapus Sesi'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -80,7 +88,8 @@ class SesiBelajarResource extends Resource
     {
         return [
             MateriRelationManager::class,
-            FileMaterisRelationManager::class
+            FileMaterisRelationManager::class,
+            TugasRelationManager::class
         ];
     }
 
