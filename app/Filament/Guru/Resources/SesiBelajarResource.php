@@ -14,6 +14,7 @@ use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -27,26 +28,26 @@ class SesiBelajarResource extends Resource
 {
     protected static ?string $model = SesiBelajar::class;
 
-    protected static bool $shouldRegisterNavigation = true;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-puzzle-piece';
    
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Card::make()->
-                    schema([
+                Section::make()
+                    ->schema([
                         Forms\Components\TextInput::make('judul')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\Select::make('id_guru_mata_pelajaran')
                             ->label("Mata Pelajaran")
-                            ->options(GuruMataPelajaran::where('id_guru', Auth::user()->id)
-                                ->get()
-                                ->map(function ($record) { 
-                                    return [$record->id => $record->mataPelajaran->nama];
-                                }))
+                            ->options(function () {
+                                // Mengambil data berdasarkan guru yang sedang login
+                                return GuruMataPelajaran::where('id_guru', Auth::user()->id)
+                                    ->get()
+                                    ->pluck('mataPelajaran.nama', 'id');
+                            })
                             ->required()
                     ])
             ]);

@@ -4,6 +4,7 @@ namespace App\Filament\Guru\Resources;
 
 use App\Filament\Guru\Resources\KuisResource\Pages;
 use App\Filament\Guru\Resources\KuisResource\RelationManagers;
+use App\Filament\Guru\Resources\KuisResource\RelationManagers\PertanyaansRelationManager;
 use App\Models\Kuis;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -18,7 +19,7 @@ class KuisResource extends Resource
 {
     protected static ?string $model = Kuis::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-fire';
 
     public static function form(Form $form): Form
     {
@@ -95,7 +96,7 @@ class KuisResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PertanyaansRelationManager::class
         ];
     }
 
