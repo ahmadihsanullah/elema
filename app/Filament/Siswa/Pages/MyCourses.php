@@ -77,4 +77,9 @@ class MyCourses extends Page
         $this->siswa = $this->getRecord();
         $this->getMataPelajarans();
     }
+
+    public function myCourse($slugMapel)
+    {
+        return redirect()->route('filament.siswa.pages.my-courses.{slugMapel}', ['slugMapel' => $slugMapel]);
+    }
 }
