@@ -20,6 +20,8 @@ class KuisResource extends Resource
     protected static ?string $model = Kuis::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-fire';
+    
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

@@ -15,4 +15,9 @@ class MataPelajaran extends Model
     {
         return $this->belongsToMany(Guru::class, 'guru_mata_pelajarans', 'id_mata_pelajaran', 'id_guru');
     }
+
+    public function jadwalPelajarans()
+    {
+        return $this->hasManyThrough(JadwalPelajaran::class, GuruMataPelajaran::class, 'id_mata_pelajaran', 'id_guru_mata_pelajaran');
+    }       
 }

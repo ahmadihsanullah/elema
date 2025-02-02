@@ -1,32 +1,27 @@
 <?php
 
-namespace App\Filament\Guru\Pages;
+namespace App\Filament\Siswa\Pages;
 
+use App\Models\GuruMataPelajaran;
+use App\Models\JadwalPelajaran;
+use App\Models\Kelas;
+use App\Models\Siswa;
+use App\Models\TahunPelajaran;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
-use App\Models\TahunPelajaran;
-use App\Models\JadwalPelajaran;
-use Filament\Actions\Action;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
-use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Cache;
 
-class ListMataPelajaran extends Page implements HasActions
+class MyCourses extends Page
 {
-    use InteractsWithActions;
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
-
-    protected static ?string $title = 'Mata Pelajaran';
-
-    protected static string $view = 'filament.guru.pages.list-mata-pelajaran';
+    protected static string $view = 'filament.siswa.pages.my-courses';
 
     public $mataPelajaran = [];
+    public $siswa;
 
-    public function mount()
+    public function getMataPelajarans()
     {
-        $guru = Auth::user();
+        $siswa = $this->siswa;
 
         // Ambil tahun pelajaran aktif dengan error handling
         $tahunPelajaranAktif = TahunPelajaran::where('aktif', true)->first();
@@ -36,8 +31,8 @@ class ListMataPelajaran extends Page implements HasActions
 
         // Query dengan select untuk optimasi
         $jadwalByMataPelajaran = JadwalPelajaran::where('id_tahun_pelajaran', $tahunPelajaranAktif->id)
-            ->whereHas('guruMataPelajaran', function ($query) use ($guru) {
-                $query->where('id_guru', $guru->id);
+            ->whereHas('guruMataPelajaran', function ($query) use ($siswa) {
+                $query->where('id_kelas', $siswa->id_kelas);
             })
             ->with([
                 'guruMataPelajaran' => function ($query) {
@@ -50,18 +45,16 @@ class ListMataPelajaran extends Page implements HasActions
                 'kelas:id,nama'
             ])
             ->get()
-            ->groupBy('guruMataPelajaran.mataPelajaran.id');
+            ->groupBy('guruMataPelajaran.id');
 
         // Transform data
         $this->mataPelajaran = $jadwalByMataPelajaran->map(function ($jadwals) {
             $firstJadwal = $jadwals->first();
-            $mataPelajaran = $firstJadwal->guruMataPelajaran->mataPelajaran;
-            $guru = $firstJadwal->guruMataPelajaran->guru;
+            $guruMapel = $firstJadwal->guruMataPelajaran;
             return [
-                'slug_guru_mapel' => $firstJadwal->guruMataPelajaran->slug,
-                'mata_pelajaran_id' => $mataPelajaran->id,
-                'mata_pelajaran' => $mataPelajaran->nama,
-                'guru' => $guru->name,
+                'slug_mapel' => $guruMapel->slug,
+                'mata_pelajaran' => $guruMapel->mataPelajaran->nama,
+                'guru' => $guruMapel->guru->name,
                 'jadwals' => $jadwals->map(function ($jadwal) {
                     return [
                         'jadwal_id' => $jadwal->id,
@@ -73,8 +66,15 @@ class ListMataPelajaran extends Page implements HasActions
         })->values();
     }
 
-    public function KelolaJadwal($slugGuruMapel)
+    
+    public function getRecord(): ?Siswa
     {
-        return redirect()->route('filament.guru.pages.mata-pelajaran.{slugGuruMapel}', ['slugGuruMapel' => $slugGuruMapel]);
+        return Auth::guard('student')->user();
+    }
+
+    public function mount()
+    {
+        $this->siswa = $this->getRecord();
+        $this->getMataPelajarans();
     }
 }

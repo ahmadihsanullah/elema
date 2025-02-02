@@ -51,6 +51,9 @@ class SiswaPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->login()
+            ->authGuard('student')
+            ->profile();
     }
 }
