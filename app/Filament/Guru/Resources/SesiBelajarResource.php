@@ -63,6 +63,7 @@ class SesiBelajarResource extends Resource
                 Tables\Columns\TextColumn::make('guruMataPelajaran.mataPelajaran.nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->date('d-m-Y'),
 
             ])
             ->filters([

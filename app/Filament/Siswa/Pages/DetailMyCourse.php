@@ -27,7 +27,7 @@ class DetailMyCourse extends Page
 
     public function sesiBelajar($slug)
     {
-        
+        return redirect()->route('filament.siswa.pages.my-courses.session.{slug}', ['slug' => $slug]);
     }
 
 

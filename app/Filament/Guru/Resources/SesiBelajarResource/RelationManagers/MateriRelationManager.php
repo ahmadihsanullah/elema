@@ -16,6 +16,7 @@ class MateriRelationManager extends RelationManager
 {
     protected static string $relationship = 'materi';
 
+
     public function form(Form $form): Form
     {
         return $form
@@ -44,7 +45,11 @@ class MateriRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->disabled(function () {
+                        // Hide Create button if 'materi' already exists for this relationship
+                        return $this->ownerRecord->materi()->exists();
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

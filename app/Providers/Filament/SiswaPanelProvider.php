@@ -54,6 +54,7 @@ class SiswaPanelProvider extends PanelProvider
             ])
             ->login()
             ->authGuard('student')
-            ->profile();
+            ->profile()
+            ->sidebarCollapsibleOnDesktop();
     }
 }
