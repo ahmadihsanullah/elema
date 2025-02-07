@@ -51,7 +51,7 @@
                 @if ($tugas->count() > 0)
                     <table class="table-auto w-full border-collapse">
                         <thead>
-                            <tr class="bg-gray-100">
+                            <tr class="border">
                                 <th class="border px-4 py-2">Judul Tugas</th>
                                 <th class="border px-4 py-2">Pengumpulan</th>
                             </tr>
@@ -59,9 +59,14 @@
                         <tbody>
                             @foreach ($tugas as $t)
                                 <tr>
-                                    <td class="border px-4 py-2">{{ $t->judul }}</td>
+                                    <td class="border px-4 py-2">{{ $t->judul . '- '. $t->id }}</td>
                                     <td class="border px-4 py-2">
-                                        <a href="#" class="text-blue-500">Kumpulkan Tugas</a>
+                                        <button
+                                            wire:click="kumpulkanTugas('{{ $t->id }}')"
+                                            class="text-blue-500"
+                                        >
+                                            Kumpulkan Tugas
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach

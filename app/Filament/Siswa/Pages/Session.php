@@ -45,4 +45,13 @@ class Session extends Page
         return response()->download($fullPath);
     }
 
+    public function kumpulkanTugas($idTugas)
+    {
+        return redirect()->route('filament.siswa.pages.submission.{idTugas}.session.{slugSesi}', [
+            'idTugas' => $idTugas,
+            'slugSesi' => $this->sesiBelajar->slug,
+        ]);
+    }
+
+
 }
