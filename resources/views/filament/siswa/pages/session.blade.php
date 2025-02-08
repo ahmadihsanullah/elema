@@ -1,4 +1,10 @@
 <x-filament-panels::page>
+    <div>
+        <x-filament::link :href="route('filament.siswa.pages.my-courses.{slugMapel}', ['slugMapel' => $slugMapel])" color="info">
+            Kembali
+        </x-filament::link>
+        {{-- {{ dd($slugMapel) }} --}}
+       </div>
     <div class="grid grid-cols-12 gap-6">
         <!-- Bagian Materi -->
         <div class="col-span-12">
@@ -59,7 +65,7 @@
                         <tbody>
                             @foreach ($tugas as $t)
                                 <tr>
-                                    <td class="border px-4 py-2">{{ $t->judul . '- '. $t->id }}</td>
+                                    <td class="border px-4 py-2">{{ $t->judul  }}</td>
                                     <td class="border px-4 py-2">
                                         <button
                                             wire:click="kumpulkanTugas('{{ $t->id }}')"

@@ -18,7 +18,7 @@ class Session extends Page
     public $fileMateri;
     public $kuis;
     public $sesiBelajar;
-
+    public $slugMapel;
 
     protected static ?string $slug = 'my-courses/session/{slug}'; // Custom URL slug
 
@@ -29,6 +29,8 @@ class Session extends Page
         $this->tugas = $this->sesiBelajar->tugas;
         $this->kuis = $this->sesiBelajar->kuis;
         $this->fileMateri = $this->sesiBelajar->fileMateris;
+        $this->slugMapel = session('slugMapel');
+
     }
 
     public function downloadFile($path): BinaryFileResponse

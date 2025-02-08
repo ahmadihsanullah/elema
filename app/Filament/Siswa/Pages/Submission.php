@@ -28,8 +28,6 @@ class Submission extends Page
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.siswa.pages.submission';
-
-    // protected static string $title = 'Pengumpulan Tugas';
     protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $slug = 'submission/{idTugas}/session/{slugSesi}';
@@ -101,9 +99,9 @@ class Submission extends Page
                 ];
 
                 // Hapus file sementara setelah upload selesai
-            if (file_exists($file->getRealPath())) {
-                unlink($file->getRealPath());
-            }
+                if (file_exists($file->getRealPath())) {
+                    unlink($file->getRealPath());
+                }
             }
         }
 
@@ -121,8 +119,6 @@ class Submission extends Page
             ]);
         }
 
-       
-
         // Refresh table atau halaman
         return redirect()->route('filament.siswa.pages.submission.{idTugas}.session.{slugSesi}', [
             'idTugas' => $this->tugas->id,
@@ -130,9 +126,46 @@ class Submission extends Page
         ]);
     }
 
-    public function edit($slug){
-        dd($slug);
-         return redirect()->route('filament.siswa.pages.submission.{idTugas}.session.{slugSesi}', [
+    public function edit($slugSubmission)
+    {
+        return redirect()->route('filament.siswa.pages.detail-submission.{slugSubmission}', [
+            'slugSubmission' => $slugSubmission,
+        ]);
+    }
+
+    public $confirmingDelete = false;
+
+    public function confirmDelete()
+    {
+        $this->confirmingDelete = true;
+    }
+
+    public function deleteSubmission()
+    {
+        // Pastikan pengumpulan tugas ada
+        if (!$this->pengumpulanTugas) {
+            return;
+        }
+
+        // Menghapus file yang terkait
+        $filePengumpulanTugas = FilePengumpulanTugas::where('pengumpulan_tugas_id', $this->pengumpulanTugas->id)->get();
+
+        foreach ($filePengumpulanTugas as $file) {
+            // Hapus file dari storage
+            if (Storage::disk('public')->exists($file->file)) {
+                Storage::disk('public')->delete($file->file);
+            }
+
+            // Hapus dari database
+            $file->delete();
+        }
+
+        // Hapus pengumpulan tugas dari database
+        $this->pengumpulanTugas->delete();
+
+
+        // Refresh halaman
+        return redirect()->route('filament.siswa.pages.submission.{idTugas}.session.{slugSesi}', [
             'idTugas' => $this->tugas->id,
             'slugSesi' => $this->slugSesi,
         ]);
