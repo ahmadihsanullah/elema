@@ -2,6 +2,8 @@
 
 namespace App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers;
 
+use App\Models\FilePengumpulanTugas;
+use App\Models\PengumpulanTugas;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Form;
@@ -10,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class TugasRelationManager extends RelationManager
 {
@@ -29,7 +32,7 @@ class TugasRelationManager extends RelationManager
                 ])
             ]);
     }
-   
+
     public function table(Table $table): Table
     {
         return $table
@@ -48,7 +51,28 @@ class TugasRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->action(function ($record) {
+                        // Menghapus file yang terkait
+                        $pengumpulanTugas = PengumpulanTugas::where('id_tugas', $record->id)->first();
+                        $filePengumpulanTugas = FilePengumpulanTugas::where('pengumpulan_tugas_id', $pengumpulanTugas->id)->get();
+                        foreach ($filePengumpulanTugas as $file) {
+                            // Hapus file dari storage
+                            if (Storage::disk('public')->exists($file->file)) {
+                                Storage::disk('public')->delete($file->file);
+                            }
+
+                            // Hapus dari database
+                            $file->delete();
+                        }
+
+                        // Hapus pengumpulan tugas dari database
+                        $pengumpulanTugas->delete();
+
+                        // Refresh halaman
+                        $record->delete();
+                        return redirect()->back();
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -39,6 +39,8 @@ class Submission extends Page
     public ?array $file = [];
     public $pengumpulanTugas;
     public $filePengumpulanTugas;
+    public $slugSession;
+    public $slugMapel;
     public function getTugas($id): self
     {
         $this->tugas = Tugas::find($id);
@@ -60,6 +62,8 @@ class Submission extends Page
         $this->getTugas($idTugas);
         $this->getSiswa();
         $this->getPengumpulanTugas();
+        // ambil session
+        $this->slugSession = session('slugSession');// Ambil slugSession dari session
     }
 
     public function getFormSchema(): array
@@ -128,8 +132,10 @@ class Submission extends Page
 
     public function edit($slugSubmission)
     {
-        return redirect()->route('filament.siswa.pages.detail-submission.{slugSubmission}', [
-            'slugSubmission' => $slugSubmission,
+        return redirect()->route('filament.siswa.pages.submission.{idTugas}.session.{slugSesi}.edit', [
+            'idTugas' => $this->tugas->id,
+            'slugSesi' => $this->slugSesi,
+            'slugSubmission' => $slugSubmission
         ]);
     }
 
@@ -168,6 +174,12 @@ class Submission extends Page
         return redirect()->route('filament.siswa.pages.submission.{idTugas}.session.{slugSesi}', [
             'idTugas' => $this->tugas->id,
             'slugSesi' => $this->slugSesi,
+        ]);
+    }
+    public function backToSession()
+    {
+        return redirect()->route('filament.siswa.pages.my-courses.session.{slug}', [
+            'slug' => $this->slugSession,
         ]);
     }
 }

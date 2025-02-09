@@ -1,4 +1,12 @@
 <x-filament-panels::page>
+    <div>
+        <x-filament::link
+        wire:click="backToSubmission"
+        tag="button"
+    >
+         Kembali   
+    </x-filament::link>
+       </div>
     <x-filament::section>
         <x-slot name="heading">
             Pengumpulan Tugas

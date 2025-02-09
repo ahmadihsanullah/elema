@@ -29,8 +29,9 @@ class Session extends Page
         $this->tugas = $this->sesiBelajar->tugas;
         $this->kuis = $this->sesiBelajar->kuis;
         $this->fileMateri = $this->sesiBelajar->fileMateris;
-        $this->slugMapel = session('slugMapel');
-
+        // ambil sesion
+        $this->slugMapel = session('slugMapel'); // Ambil slugMapel dari session
+        session()->put('slugSession', $slug);
     }
 
     public function downloadFile($path): BinaryFileResponse

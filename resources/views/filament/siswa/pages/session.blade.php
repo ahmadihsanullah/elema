@@ -3,7 +3,7 @@
         <x-filament::link :href="route('filament.siswa.pages.my-courses.{slugMapel}', ['slugMapel' => $slugMapel])" color="info">
             Kembali
         </x-filament::link>
-        {{-- {{ dd($slugMapel) }} --}}
+     
        </div>
     <div class="grid grid-cols-12 gap-6">
         <!-- Bagian Materi -->

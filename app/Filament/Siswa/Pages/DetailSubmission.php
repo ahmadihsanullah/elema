@@ -27,17 +27,21 @@ class DetailSubmission extends Page implements HasTable
     protected static string $view = 'filament.siswa.pages.detail-submission';
 
     protected static bool $shouldRegisterNavigation = false;
-    protected static ?string $slug = 'detail-submission/{slugSubmission}';
+    // protected static ?string $slug = 'edit-submission/{slugSubmission}';
+    protected static ?string $slug = 'submission/{idTugas}/session/{slugSesi}/edit';
+
 
     public $slugSubmission;
     public $submission;
     public ?array $file = [];
+    public $slugSession;
 
 
-    public function mount($slugSubmission)
+    public function mount()
     {
-        $this->slugSubmission = $slugSubmission;
-        $this->submission = PengumpulanTugas::where('slug', $slugSubmission)->first();
+        $this->slugSubmission = request()->query('slugSubmission');
+        $this->submission = PengumpulanTugas::where('slug', $this->slugSubmission)->first();
+        $this->slugSession = session('slugSession');// Ambil slugSession dari session
     }
 
     public function getFormSchema(): array
@@ -114,10 +118,18 @@ class DetailSubmission extends Page implements HasTable
                 'nama_file' => $fileData['name'], // Simpan nama asli file
             ]);
         }
+        return redirect()->route('filament.siswa.pages.submission.{idTugas}.session.{slugSesi}.edit', [
+            'idTugas' => $this->submission->tugas->id, // Pastikan ini mengambil idTugas dengan benar
+            'slugSesi' => $this->slugSession, // Menggunakan slugSesi dari session
+            'slugSubmission' => $this->slugSubmission // Menggunakan slugSubmission dari session
+        ]);
+    }
 
-         // Refresh table atau halaman
-         return redirect()->route('filament.siswa.pages.detail-submission.{slugSubmission}', [
-            'slugSubmission' => $this->slugSubmission
-        ]); 
+    public function backToSubmission()
+    {
+        return redirect()->route('filament.siswa.pages.my-courses.session.{slug}',
+             ['slug' => $this->slugSession]
+        );
+
     }
 }
