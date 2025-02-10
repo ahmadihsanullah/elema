@@ -90,7 +90,7 @@
                                     Terlambat
                                 </span>
                             @else
-                                {{ $remainingTime }}
+                                Tepat Waktu
                             @endif
                         </td>
                     </tr>
@@ -115,6 +115,7 @@
                     </tr>
                     <tr>
                         <td colspan="3" class="border px-4 py-2 text-center">File </td>
+                        <td colspan="2" class="border px-4 py-2 text-center">Nilai </td>
                     </tr>
                     <tr>
                         <td colspan="3" class="border px-4 py-2">
@@ -142,7 +143,11 @@
                                 </ul>
                             @endif
                         </td>
-
+                        <td colspan="2" class="border px-4 py-2">
+                          <span class="font-bold">
+                            {{ $this->pengumpulanTugas->nilai }}
+                        </span>
+                        </td>
                     </tr>
                 </table>
             </x-filament::section>

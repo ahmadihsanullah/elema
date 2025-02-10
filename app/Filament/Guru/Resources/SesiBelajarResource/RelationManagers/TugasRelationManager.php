@@ -9,6 +9,7 @@ use Filament\Forms\Components\Card;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -72,7 +73,13 @@ class TugasRelationManager extends RelationManager
                         // Refresh halaman
                         $record->delete();
                         return redirect()->back();
+                    }),
+                Action::make('review')
+                    ->icon('heroicon-o-eye')
+                    ->url(function ($record) {
+                        return route('filament.guru.pages.listPengumpulanTugas.{idTugas}', parameters: ['idTugas' => $record->id]);
                     })
+                    ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

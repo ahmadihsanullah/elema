@@ -27,7 +27,6 @@ class DetailSubmission extends Page implements HasTable
     protected static string $view = 'filament.siswa.pages.detail-submission';
 
     protected static bool $shouldRegisterNavigation = false;
-    // protected static ?string $slug = 'edit-submission/{slugSubmission}';
     protected static ?string $slug = 'submission/{idTugas}/session/{slugSesi}/edit';
 
 

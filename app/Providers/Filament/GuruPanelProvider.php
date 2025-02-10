@@ -53,6 +53,7 @@ class GuruPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->login()
-            ->authGuard('teacher');
+            ->authGuard('teacher')
+            ->sidebarCollapsibleOnDesktop();
     }
 }
