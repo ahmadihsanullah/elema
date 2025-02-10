@@ -14,4 +14,10 @@ class HasilKuis extends Model
     public function siswa(): BelongsTo{
         return $this->belongsTo(Siswa::class, 'id_siswa', 'id');
     }
+
+    public function jawabanSiswa()
+{
+    return $this->hasMany(JawabanSiswa::class, 'id_hasil_kuis');
+}
+
 }
