@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\GuruResource\RelationManagers;
+namespace App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -10,25 +10,26 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class MataPelajaransRelationManager extends RelationManager
+class KuisRelationManager extends RelationManager
 {
-    protected static string $relationship = 'mataPelajarans';
+    protected static string $relationship = 'kuis';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('nama')
-                    ->required(),
+                Forms\Components\TextInput::make('judul')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('nama')
+            ->recordTitleAttribute('judul')
             ->columns([
-                Tables\Columns\TextColumn::make('nama'),
+                Tables\Columns\TextColumn::make('judul'),
             ])
             ->filters([
                 //
@@ -37,8 +38,8 @@ class MataPelajaransRelationManager extends RelationManager
                 Tables\Actions\AttachAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

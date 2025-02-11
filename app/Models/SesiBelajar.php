@@ -45,7 +45,7 @@ class SesiBelajar extends Model
         return $this->hasMany(Tugas::class, "id_sesi_belajar", "id");
     }
 
-    public function kuis(): HasMany{
-        return $this->hasMany(Kuis::class, "id_sesi_belajar", "id");
+    public function kuis(): BelongsToMany{
+        return $this->belongsToMany(Kuis::class, "kuis_sesi_belajar", "id_sesi_belajar", "id_kuis");
     }
 }

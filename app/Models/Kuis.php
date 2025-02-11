@@ -22,8 +22,8 @@ class Kuis extends Model
         });
     }
     
-    public function sesiBelajar(): BelongsTo{
-        return $this->belongsTo(SesiBelajar::class, 'id_sesi_belajar', 'id');
+    public function sesiBelajars(): BelongsToMany{
+        return $this->belongsToMany(SesiBelajar::class,"kuis_sesi_belajar","id_kuis","id_sesi_belajar");
     }
 
     public function pertanyaans(): HasMany{

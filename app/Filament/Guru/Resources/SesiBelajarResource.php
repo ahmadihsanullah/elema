@@ -5,9 +5,11 @@ namespace App\Filament\Guru\Resources;
 use App\Filament\Guru\Resources\SesiBelajarResource\Pages;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\FileMaterisRelationManager;
+use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\KuisRelationManager;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\MateriRelationManager;
 use App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers\TugasRelationManager;
 use App\Models\GuruMataPelajaran;
+use App\Models\Kuis;
 use App\Models\MataPelajaran;
 use App\Models\SesiBelajar;
 use Filament\Facades\Filament;
@@ -92,7 +94,8 @@ class SesiBelajarResource extends Resource
         return [
             MateriRelationManager::class,
             FileMaterisRelationManager::class,
-            TugasRelationManager::class
+            TugasRelationManager::class,
+            KuisRelationManager::class
         ];
     }
 

@@ -65,7 +65,8 @@ class ListPengumpulanTugas extends Page implements HasTable
                     ->action(
                         \Filament\Tables\Actions\Action::make('edit-nilai')
                             ->form([
-                                TextInput::make('nilai'),
+                                TextInput::make('nilai')
+                                ->numeric(),
                             ])
                             ->fillForm(fn($record) => [
                                 'nilai' => $record->nilai,
