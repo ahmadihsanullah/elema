@@ -31,9 +31,10 @@
                     <h2 class="text-xl font-semibold">File Materi</h2>
                 </x-slot>
                 @if ($fileMateri)
-                    @foreach($fileMateri as $file)
+                    @foreach ($fileMateri as $file)
                         <div class="border-b border-gray-200 pb-4 mb-4">
-                            <button class="font-medium flex items-center space-x-2" wire:click="downloadFile('{{ $file->file }}')">
+                            <button class="font-medium flex items-center space-x-2"
+                                wire:click="downloadFile('{{ $file->file }}')">
                                 <x-heroicon-o-document class="mx-3 w-5 h-5 text-gray-500" />
                                 <span>{{ $file->nama }}</span>
                             </button>
@@ -45,14 +46,14 @@
             </x-filament::section>
         </div>
 
-       
+
         <!-- Tabel Tugas -->
         <div class="col-span-12">
             <x-filament::section>
                 <x-slot name="heading">
                     <h2 class="text-xl font-semibold">Daftar Tugas</h2>
                 </x-slot>
-                
+
                 @if ($tugas->count() > 0)
                     <table class="table-auto w-full border-collapse">
                         <thead>
@@ -64,12 +65,10 @@
                         <tbody>
                             @foreach ($tugas as $t)
                                 <tr>
-                                    <td class="border px-4 py-2">{{ $t->judul  }}</td>
+                                    <td class="border px-4 py-2">{{ $t->judul }}</td>
                                     <td class="border px-4 py-2">
-                                        <button
-                                            wire:click="kumpulkanTugas('{{ $t->id }}')"
-                                            class="text-blue-500"
-                                        >
+                                        <button wire:click="kumpulkanTugas('{{ $t->id }}')"
+                                            class="text-blue-500">
                                             Kumpulkan Tugas
                                         </button>
                                     </td>
@@ -84,23 +83,38 @@
         </div>
 
         <!-- Bagian Kuis -->
-        <div class="col-span-6 border border-blue-500">
-            <x-filament::section>
+<div class="col-span-6 border border-blue-500 rounded-lg p-4">
+    <x-filament::section>
+        <x-slot name="heading">
+            <h2 class="text-xl font-semibold mb-4">Kuis</h2>
+        </x-slot>
+
+        @if ($kuis->count() > 0)
+            @foreach ($kuis as $k)
+            <x-filament::section class="mb-4">
                 <x-slot name="heading">
-                    <h2 class="text-xl font-semibold">Kuis</h2>
+                        <h1>{{ $k->judul }}</h1>
                 </x-slot>
-                @if ($kuis->count() > 0)
-                    @foreach($kuis as $k)
-                        <div class="border-b border-gray-200 pb-4 mb-4">
-                            <h3 class="font-medium">{{ $k->judul }}</h3>
-                            <p class="text-sm text-gray-500 mb-2">{{ $k->deskripsi }}</p>
-                            <p class="mb-4">Mulai: <strong>{{ \Carbon\Carbon::parse($k->mulai)->format('d M Y, H:i') }}</strong></p>
-                        </div>
-                    @endforeach
-                @else
-                    <p class="text-gray-500">Tidak ada kuis untuk sesi ini.</p>
-                @endif
+                <div class="prose max-w-none">
+                    <p>Deskripsi : {{ $k->deskripsi }}</p>
+                    <p><strong>Intruksi Kuis</strong></p>
+                    <p><strong>Durasi:</strong> {{ $k->durasi }} menit</p>
+                    <p><strong>Jumlah Soal:</strong> {{ $k->pertanyaans()->count() }} soal</p>
+                    <p><strong>Petunjuk:</strong> Pastikan Anda mengerjakan semua soal dengan seksama. Waktu akan dimulai setelah Anda memulai kuis ini.</p>
+                </div>
+                <!-- Tombol untuk memulai kuis -->
+                <x-filament::button color="info" wire:click="startQuiz('{{ $k->slug }}')" class="mt-3">
+                   Mulai Kuis
+                </x-filament::button>
             </x-filament::section>
-        </div>
+            @endforeach
+        @else
+            <!-- Pesan Jika Tidak Ada Kuis -->
+            <p class="text-gray-500">Tidak ada kuis untuk sesi ini.</p>
+        @endif
+    </x-filament::section>
+</div>
+
+
     </div>
 </x-filament-panels::page>

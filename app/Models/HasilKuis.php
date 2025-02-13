@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class HasilKuis extends Model
 {
@@ -15,7 +16,7 @@ class HasilKuis extends Model
         return $this->belongsTo(Siswa::class, 'id_siswa', 'id');
     }
 
-    public function jawabanSiswa()
+    public function jawabanSiswa():HasMany
 {
     return $this->hasMany(JawabanSiswa::class, 'id_hasil_kuis');
 }

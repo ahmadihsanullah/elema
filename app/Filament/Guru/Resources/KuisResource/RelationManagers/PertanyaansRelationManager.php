@@ -26,7 +26,7 @@ class PertanyaansRelationManager extends RelationManager
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('penjelasan')
                     ->columnSpanFull(),
-                Forms\Components\Toggle::make('aktif')
+                Forms\Components\TextInput::make('bobot')
                     ->required(),
             ]);
     }
@@ -37,8 +37,7 @@ class PertanyaansRelationManager extends RelationManager
             ->recordTitleAttribute('pertanyaan')
             ->columns([
                 Tables\Columns\TextColumn::make('pertanyaan'),
-                Tables\Columns\IconColumn::make('aktif')
-                    ->boolean(),
+                Tables\Columns\TextColumn::make('bobot')
             ])
             ->filters([
                 //

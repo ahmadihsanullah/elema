@@ -19,7 +19,6 @@ class Session extends Page
     public $kuis;
     public $sesiBelajar;
     public $slugMapel;
-
     protected static ?string $slug = 'my-courses/session/{slug}'; // Custom URL slug
 
     public function mount($slug)
@@ -56,5 +55,9 @@ class Session extends Page
         ]);
     }
 
+    public function startQuiz($slugQuiz){
+        session()->put('slugQuiz', $slugQuiz);
+        return redirect()->route('filament.siswa.pages.show-quiz');
+    }
 
 }

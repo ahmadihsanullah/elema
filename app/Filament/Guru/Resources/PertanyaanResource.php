@@ -39,8 +39,9 @@ class PertanyaanResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Textarea::make('penjelasan')
                     ->columnSpanFull(),
-                Forms\Components\Toggle::make('aktif')
-                    ->required(),
+                Forms\Components\TextInput::make('bobot')
+                    ->required()
+                    ->numeric(),
             ]);
     }
 

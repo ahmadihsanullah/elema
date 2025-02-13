@@ -44,8 +44,6 @@ class KuisResource extends Resource
                         Forms\Components\TextInput::make('durasi')
                             ->numeric()
                             ->label('Durasi Pengerjaan(menit)'),
-                    Forms\Components\Toggle::make('aktif')
-                        ->required(),
                     Forms\Components\Toggle::make('acak_soal')
                         ->required(),
                 ])->columns(2)
@@ -61,8 +59,7 @@ class KuisResource extends Resource
                 Tables\Columns\IconColumn::make('aktif')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('durasi')
-                    ->dateTime()
-                    ->sortable(),
+                    ->label("durasi (menit)"),
                 Tables\Columns\TextColumn::make('waktu_mulai')
                     ->dateTime()
                     ->sortable(),
@@ -71,8 +68,7 @@ class KuisResource extends Resource
                     ->sortable(),
                 Tables\Columns\IconColumn::make('acak_soal')
                     ->boolean(),
-                Tables\Columns\IconColumn::make('nilai_minimal')
-                    ->boolean(),
+                Tables\Columns\TextColumn::make('nilai_minimal'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
