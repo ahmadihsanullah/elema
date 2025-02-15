@@ -8,10 +8,12 @@ use App\Models\Kuis;
 use App\Models\Jawaban;
 use Filament\Forms;
 use Filament\Pages\Page;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Actions\Action;
 
 class ShowQuiz extends Page implements Forms\Contracts\HasForms
 {
@@ -27,6 +29,8 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
     public $durasi;
     public $jumlahSoal;
     public $jawaban = [];
+    public $hasilKuis;
+    public $skor = 0;
 
     public function mount()
     {
@@ -36,6 +40,26 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
         $this->durasi = $this->kuis->durasi;
         $this->jumlahSoal = $this->soals->count();
         $this->jawaban = array_fill(0, $this->jumlahSoal, null);
+
+        // Create or retrieve the HasilKuis record
+        $this->hasilKuis = HasilKuis::firstOrCreate([
+            'id_kuis' => $this->kuis->id,
+            'id_siswa' => auth()->id(),
+        ], [
+            'waktu_mulai' => now("Asia/Jakarta"),
+            'status' => 'in_progress',
+        ]);
+
+        // Load existing answers if any
+        $existingAnswers = JawabanSiswa::where('id_hasil_kuis', $this->hasilKuis->id)->get();
+        foreach ($existingAnswers as $answer) {
+            $index = $this->soals->search(function ($soal) use ($answer) {
+                return $soal->id === $answer->id_pertanyaan;
+            });
+            if ($index !== false) {
+                $this->jawaban[$index] = $answer->id_jawaban;
+            }
+        }
     }
 
     protected function getFormSchema(): array
@@ -53,13 +77,30 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
                                     Forms\Components\Radio::make('jawaban.' . $index)
                                         ->label('Pilih jawaban:')
                                         ->options($soal->jawabans->pluck('jawaban', 'id')->toArray())
-                                        ->required(),
+                                        ->required()
+                                        ->afterStateUpdated(function ($state) use ($index, $soal) {
+                                            $this->simpanJawaban($index, $soal->id, $state);
+                                        }),
                                 ]),
                         ]);
                 })->toArray()
-            )->submitAction(new HtmlString(Blade::render(<<<BLADE
+            )
+            ->nextAction(function (Action $action) {
+                $action->label('Next')
+                    ->action(function () {
+                        $currentStep = $this->form->getState()['currentStep'];
+                        $index = $currentStep - 1;
+                        $pertanyaanId = $this->soals[$index]->id;
+                        $jawabanId = $this->jawaban[$index];
+
+                        $this->simpanJawaban($index, $pertanyaanId, $jawabanId);
+
+                        $this->form->statePath('currentStep')->increment();
+                    });
+            })
+            ->submitAction(new HtmlString(Blade::render(<<<BLADE
             <x-filament::button
-                wire:click="simpanJawaban"
+                wire:click="selesaiKuis"
                 type="submit"
                 size="sm"
                 label="Selesai"
@@ -70,38 +111,47 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
         ];
     }
 
-    public function simpanJawaban()
+    public function simpanJawaban($index, $pertanyaanId, $jawabanId)
     {
-        DB::transaction(function () {
-            $hasilKuis = HasilKuis::create([
-                'id_kuis' => $this->kuis->id,
-                'id_siswa' => auth()->id(),
-                'waktu_mulai' => now(),
-                'waktu_selesai' => now(),
-                'status' => 'selesai',
+        // Check if the current time is past the quiz end time
+        if (Carbon::now('Asia/Jakarta')->greaterThan($this->kuis->waktu_selesai)) {
+            session()->flash('error', 'Waktu pengerjaan kuis telah berakhir.');
+            $this->hasilKuis->update(['status' => 'expired']);
+            return;
+        }
+
+        DB::transaction(function () use ($index, $pertanyaanId, $jawabanId) {
+            JawabanSiswa::updateOrCreate([
+                'id_hasil_kuis' => $this->hasilKuis->id,
+                'id_pertanyaan' => $pertanyaanId,
+            ], [
+                'id_jawaban' => $jawabanId,
             ]);
 
-            $skor = 0;
-            foreach ($this->soals as $index => $soal) {
-                JawabanSiswa::create([
-                    'id_hasil_kuis' => $hasilKuis->id,
-                    'id_pertanyaan' => $soal->id,
-                    'id_jawaban' => $this->jawaban[$index],
-                ]);
-
-                $jawabanBenar = Jawaban::where('id', $this->jawaban[$index])
-                    ->where('jawaban_benar', true)
-                    ->exists();
-
+            $jawabanBenar = Jawaban::where('id', $jawabanId)
+                ->where('jawaban_benar', true)
+                ->exists();
                 if ($jawabanBenar) {
-                    $skor += $soal->bobot; // Tambahkan bobot pertanyaan ke skor
+                    $this->hasilKuis->increment('skor', $this->soals[$index]->bobot);
                 }
-            }
-
-            $hasilKuis->update(['skor' => $skor]);
-
-            session()->flash('status', 'Kuis selesai! Nilai Anda: ' . $skor);
-            return redirect()->route('filament.siswa.pages.quiz-result.{slugQuiz}', ['slugQuiz' => $this->slugQuiz]);
         });
+    }
+
+    public function selesaiKuis()
+    {
+        // Check if the current time is past the quiz end time
+        if (Carbon::now('Asia/Jakarta')->greaterThan($this->kuis->waktu_selesai)) {
+            session()->flash('error', 'Waktu pengerjaan kuis telah berakhir.');
+            $this->hasilKuis->update(['status' => 'expired']);
+            return;
+        }
+
+        $this->hasilKuis->update([
+            'waktu_selesai' => now("Asia/Jakarta"),
+            'status' => 'completed',
+        ]);
+
+        session()->flash('status', 'Kuis selesai! Nilai Anda: ' . $this->hasilKuis->skor);
+        return redirect()->route('filament.siswa.pages.quiz-result.{slugQuiz}', ['slugQuiz' => $this->slugQuiz]);
     }
 }

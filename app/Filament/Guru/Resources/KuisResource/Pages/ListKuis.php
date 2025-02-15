@@ -3,6 +3,7 @@
 namespace App\Filament\Guru\Resources\KuisResource\Pages;
 
 use App\Filament\Guru\Resources\KuisResource;
+use Auth;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,4 +17,6 @@ class ListKuis extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+    
+    
 }

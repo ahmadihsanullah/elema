@@ -2,6 +2,8 @@
 
 namespace App\Filament\Guru\Resources\SesiBelajarResource\RelationManagers;
 
+use App\Models\Kuis;
+use Auth;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -18,12 +20,11 @@ class KuisRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('judul')
+                Forms\Components\Select::make('judul')
                     ->required()
                     ->maxLength(255),
             ]);
     }
-
     public function table(Table $table): Table
     {
         return $table
@@ -35,17 +36,24 @@ class KuisRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AttachAction::make()
+                ->recordSelectOptionsQuery(fn (Builder $query) => $query->where('id_guru', Auth::id())),
             ])
             ->actions([
                 Tables\Actions\DetachAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Kuis $record) => 
+                    route('filament.guru.pages.view-quiz-result.{id}', ['id' => $record->slug])
+                    )
+                    ->tooltip('View Students'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DetachBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ;
     }
 }

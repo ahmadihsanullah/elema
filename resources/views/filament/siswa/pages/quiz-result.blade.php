@@ -3,7 +3,7 @@
     <div class="container mx-auto p-4">
         <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
             <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Hasil Kuis: {{ $hasilKuis->kuis->judul }}</h2>
-            <p class="text-lg mb-4 text-gray-900 dark:text-gray-100">Skor Anda: <span class="font-semibold">{{ $skor }}</span> dari <span class="font-semibold">{{ $hasilKuis->kuis->pertanyaans->sum('bobot') }}</span> poin</p>
+            <p class="text-lg mb-4 text-gray-900 dark:text-gray-100">Skor Anda: <span class="font-semibold">{{ $hasilKuis->skor }}</span> dari <span class="font-semibold">{{ $hasilKuis->kuis->pertanyaans->sum('bobot') }}</span> poin</p>
         </div>
 
         <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">

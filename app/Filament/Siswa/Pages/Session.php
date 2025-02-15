@@ -54,10 +54,19 @@ class Session extends Page
             'slugSesi' => $this->sesiBelajar->slug,
         ]);
     }
+    public function lanjutkanKuis($slug)
+    {
+        // Logic to continue the quiz
+        return redirect()->route('filament.siswa.pages.show-quiz', ['slugQuiz' => $slug]);
+    }
 
     public function startQuiz($slugQuiz){
         session()->put('slugQuiz', $slugQuiz);
         return redirect()->route('filament.siswa.pages.show-quiz');
+    }
+
+    public function lihatHasil($slugQuiz){
+        return redirect()->route('filament.siswa.pages.quiz-result.{slugQuiz}', ['slugQuiz' => $slugQuiz]);
     }
 
 }

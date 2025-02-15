@@ -6,6 +6,7 @@ use App\Filament\Guru\Resources\KuisResource\Pages;
 use App\Filament\Guru\Resources\KuisResource\RelationManagers;
 use App\Filament\Guru\Resources\KuisResource\RelationManagers\PertanyaansRelationManager;
 use App\Models\Kuis;
+use Auth;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
@@ -13,21 +14,35 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class KuisResource extends Resource
 {
     protected static ?string $model = Kuis::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-fire';
-    
+
     protected static ?int $navigationSort = 2;
+    
+    public static function getEloquentQuery(): Builder
+    {
+        $query = static::getModel()::query();
+
+        if (Auth::user()) {
+            $query->where('id_guru', Auth::id());
+        }
+
+        return $query;
+    }
+
+    
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make('Kuis')->schema([
+                    Forms\Components\Hidden::make('id_guru')
+                    ->default(Auth::id()),
                     Forms\Components\TextInput::make('judul')
                         ->required()
                         ->maxLength(255),
@@ -41,9 +56,9 @@ class KuisResource extends Resource
                         ->minValue(0) // Kamu bisa atur nilai minimal
                         ->maxValue(100) // Jika ingin ada batasan maksimal (misal 100)
                         ->label('Nilai Minimal'),
-                        Forms\Components\TextInput::make('durasi')
-                            ->numeric()
-                            ->label('Durasi Pengerjaan(menit)'),
+                    Forms\Components\TextInput::make('durasi')
+                        ->numeric()
+                        ->label('Durasi Pengerjaan(menit)'),
                     Forms\Components\Toggle::make('acak_soal')
                         ->required(),
                 ])->columns(2)
@@ -56,8 +71,6 @@ class KuisResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('judul')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('aktif')
-                    ->boolean(),
                 Tables\Columns\TextColumn::make('durasi')
                     ->label("durasi (menit)"),
                 Tables\Columns\TextColumn::make('waktu_mulai')
@@ -83,6 +96,7 @@ class KuisResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -26,4 +26,9 @@ class Guru extends Authenticatable
     {
         return $this->hasManyThrough(JadwalPelajaran::class, GuruMataPelajaran::class, 'id_guru', 'id_guru_mata_pelajaran');
     }
+
+    public function kuis()
+    {
+        return $this->hasMany(Kuis::class, 'id_guru', 'id');
+    }
 }

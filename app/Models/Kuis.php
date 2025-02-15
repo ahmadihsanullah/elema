@@ -30,7 +30,12 @@ class Kuis extends Model
         return $this->hasMany(Pertanyaan::class, 'id_kuis', 'id');
     }
 
-    public function hasilKuis(): BelongsToMany{
-        return $this->belongsToMany(HasilKuis::class, 'id_kuis', 'id');
+    public function hasilKuis(): HasMany{
+        return $this->HasMany(HasilKuis::class, 'id_kuis', 'id');
+    }
+
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class, 'id_guru', 'id');
     }
 }
