@@ -5,6 +5,7 @@ namespace App\Filament\Guru\Pages;
 use App\Models\HasilKuis;
 use App\Models\Kuis;
 use Filament\Pages\Page;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -19,6 +20,8 @@ class ViewQuizResult extends Page implements HasTable
     protected static string $view = 'filament.guru.pages.view-quiz-result';
 
     protected static bool $shouldRegisterNavigation = false;
+    protected static ?string $title = '';
+
 
     protected static ?string $slug = 'view-quiz-result/{id}'; // Custom URL slug
     public $kuis;
@@ -47,6 +50,9 @@ class ViewQuizResult extends Page implements HasTable
                 TextColumn::make('skor')
                     ->label('Nilai')
                     ->badge()
+            ])
+            ->actions([
+                DeleteAction::make(),
             ])
             ->filters([
                 // Filter untuk mencari siswa berdasarkan nama

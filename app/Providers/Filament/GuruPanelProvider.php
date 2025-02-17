@@ -36,7 +36,6 @@ class GuruPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Guru/Widgets'), for: 'App\\Filament\\Guru\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -54,6 +53,9 @@ class GuruPanelProvider extends PanelProvider
             ])
             ->login()
             ->authGuard('teacher')
-            ->sidebarCollapsibleOnDesktop();
+            ->sidebarCollapsibleOnDesktop()
+            ->colors([
+                'primary' => Color::Blue,
+            ]);
     }
 }

@@ -26,22 +26,18 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
     public $slugQuiz;
     public $kuis;
     public $soals;
-    public $durasi;
     public $jumlahSoal;
     public $jawaban = [];
     public $hasilKuis;
+    public $durasi;
     public $skor = 0;
 
     public function mount()
     {
         $this->slugQuiz = session('slugQuiz');
         $this->kuis = Kuis::with('pertanyaans.jawabans')->where('slug', $this->slugQuiz)->first();
-        $this->soals = $this->kuis ? $this->kuis->pertanyaans : [];
-        $this->durasi = $this->kuis->durasi;
-        $this->jumlahSoal = $this->soals->count();
-        $this->jawaban = array_fill(0, $this->jumlahSoal, null);
 
-        // Create or retrieve the HasilKuis record
+        // Load or create HasilKuis record
         $this->hasilKuis = HasilKuis::firstOrCreate([
             'id_kuis' => $this->kuis->id,
             'id_siswa' => auth()->id(),
@@ -50,14 +46,26 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
             'status' => 'in_progress',
         ]);
 
+        // Load or shuffle questions
+        if ($this->hasilKuis->questions) {
+            $this->soals = collect($this->hasilKuis->questions);
+        } else {
+            $this->soals = $this->kuis->acak_soal ? $this->kuis->pertanyaans->shuffle() : $this->kuis->pertanyaans;
+            $this->hasilKuis->questions = $this->soals;
+            $this->hasilKuis->save();
+        }
+
+        $this->jumlahSoal = $this->soals->count();
+        $this->jawaban = array_fill(0, $this->jumlahSoal, null);
+        $this->durasi = $this->kuis->durasi;
         // Load existing answers if any
         $existingAnswers = JawabanSiswa::where('id_hasil_kuis', $this->hasilKuis->id)->get();
         foreach ($existingAnswers as $answer) {
             $index = $this->soals->search(function ($soal) use ($answer) {
-                return $soal->id === $answer->id_pertanyaan;
+                return $soal['id'] === $answer['id_pertanyaan'];
             });
             if ($index !== false) {
-                $this->jawaban[$index] = $answer->id_jawaban;
+                $this->jawaban[$index] = $answer['id_jawaban'];
             }
         }
     }
@@ -73,13 +81,13 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
                                 ->schema([
                                     Forms\Components\Placeholder::make('pertanyaan')
                                         ->label('')
-                                        ->content($soal->pertanyaan),
+                                        ->content($soal['pertanyaan']),
                                     Forms\Components\Radio::make('jawaban.' . $index)
                                         ->label('Pilih jawaban:')
-                                        ->options($soal->jawabans->pluck('jawaban', 'id')->toArray())
+                                        ->options(collect($soal['jawabans'])->pluck('jawaban', 'id')->toArray())
                                         ->required()
                                         ->afterStateUpdated(function ($state) use ($index, $soal) {
-                                            $this->simpanJawaban($index, $soal->id, $state);
+                                            $this->simpanJawaban($index, $soal['id'], $state);
                                         }),
                                 ]),
                         ]);
@@ -90,7 +98,7 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
                     ->action(function () {
                         $currentStep = $this->form->getState()['currentStep'];
                         $index = $currentStep - 1;
-                        $pertanyaanId = $this->soals[$index]->id;
+                        $pertanyaanId = $this->soals[$index]['id'];
                         $jawabanId = $this->jawaban[$index];
 
                         $this->simpanJawaban($index, $pertanyaanId, $jawabanId);
@@ -131,9 +139,9 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
             $jawabanBenar = Jawaban::where('id', $jawabanId)
                 ->where('jawaban_benar', true)
                 ->exists();
-                if ($jawabanBenar) {
-                    $this->hasilKuis->increment('skor', $this->soals[$index]->bobot);
-                }
+            if ($jawabanBenar) {
+                $this->hasilKuis->increment('skor', $this->soals[$index]['bobot']);
+            }
         });
     }
 

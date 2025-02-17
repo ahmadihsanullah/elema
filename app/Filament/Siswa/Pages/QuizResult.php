@@ -13,6 +13,7 @@ class QuizResult extends Page
     protected static string $view = 'filament.siswa.pages.quiz-result';
 
     protected static bool $shouldRegisterNavigation = false;
+    protected static ?string $title = '';
 
     protected static ?string $slug = 'quiz-result/{slugQuiz}'; // Custom URL slug
     public $hasilKuis;

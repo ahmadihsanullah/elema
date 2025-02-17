@@ -36,7 +36,6 @@ class SiswaPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Siswa/Widgets'), for: 'App\\Filament\\Siswa\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -55,6 +54,17 @@ class SiswaPanelProvider extends PanelProvider
             ->login()
             ->authGuard('student')
             ->profile()
-            ->sidebarCollapsibleOnDesktop();
+            ->sidebarCollapsibleOnDesktop()
+            ->colors([
+                'primary' => Color::Blue,
+            ])
+            ->profile()
+            ->brandLogo(asset('images/logo.jpg'))
+            ->renderHook(
+                // This line tells us where to render it
+                'panels::body.end',
+                // This is the view that will be rendered
+                fn () => view('filament.footer.footer'),
+            );;
     }
 }

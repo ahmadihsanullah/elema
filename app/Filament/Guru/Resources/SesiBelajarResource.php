@@ -72,11 +72,6 @@ class SesiBelajarResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('review')
-                ->label('Review Sesi')
-                ->icon('heroicon-o-eye') // Ikon untuk action review
-                // ->url(fn (SesiBelajar $record) => route('review.sesi-belajar', $record)) // Arahkan ke halaman review
-                ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make()
                 ->label('Kelola Sesi'),
                 Tables\Actions\DeleteAction::make()

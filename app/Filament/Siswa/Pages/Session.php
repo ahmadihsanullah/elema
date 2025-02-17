@@ -13,6 +13,8 @@ class Session extends Page
     protected static string $view = 'filament.siswa.pages.session';
     protected static bool $shouldRegisterNavigation = false;
 
+    protected static ?string $title = '';
+
     public $materi;
     public $tugas;
     public $fileMateri;

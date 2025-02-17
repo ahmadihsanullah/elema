@@ -8,17 +8,31 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class HasilKuis extends Model
 {
-    public function kuis(): BelongsTo{
+    public function kuis(): BelongsTo
+    {
         return $this->belongsTo(Kuis::class, 'id_kuis', 'id');
     }
 
-    public function siswa(): BelongsTo{
+    public function siswa(): BelongsTo
+    {
         return $this->belongsTo(Siswa::class, 'id_siswa', 'id');
     }
 
-    public function jawabanSiswa():HasMany
-{
-    return $this->hasMany(JawabanSiswa::class, 'id_hasil_kuis');
-}
+    public function jawabanSiswa(): HasMany
+    {
+        return $this->hasMany(JawabanSiswa::class, 'id_hasil_kuis');
+    }
+
+     // Accessor for questions
+     public function getQuestionsAttribute($value)
+     {
+         return json_decode($value, true);
+     }
+ 
+     // Mutator for questions
+     public function setQuestionsAttribute($value)
+     {
+         $this->attributes['questions'] = json_encode($value);
+     }
 
 }
