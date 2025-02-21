@@ -75,7 +75,7 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
         return [
             Wizard::make(
                 $this->soals->map(function ($soal, $index) {
-                    return Forms\Components\Wizard\Step::make('Soal ' . ($index + 1))
+                    return Forms\Components\Wizard\Step::make( $index+1)
                         ->schema([
                             Forms\Components\Fieldset::make('Pertanyaan')
                                 ->schema([
@@ -93,29 +93,36 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
                         ]);
                 })->toArray()
             )
-            ->nextAction(function (Action $action) {
-                $action->label('Next')
-                    ->action(function () {
-                        $currentStep = $this->form->getState()['currentStep'];
-                        $index = $currentStep - 1;
-                        $pertanyaanId = $this->soals[$index]['id'];
-                        $jawabanId = $this->jawaban[$index];
+                ->nextAction(function (Action $action) {
+                    $action->label('Next')
+                        ->action(function () {
+                            // Check if the current time is past the quiz end time
+                            if (Carbon::now('Asia/Jakarta')->greaterThan($this->kuis->waktu_selesai)) {
+                                session()->flash('error', 'Waktu pengerjaan kuis telah berakhir.');
+                                $this->hasilKuis->update(['status' => 'expired', 'waktu_selesai' => now("Asia/Jakarta")]);
+                                return redirect()->route('filament.siswa.pages.quiz-result.{slugQuiz}', ['slugQuiz' => $this->slugQuiz]);
+                            }
 
-                        $this->simpanJawaban($index, $pertanyaanId, $jawabanId);
+                            $currentStep = $this->form->getState()['currentStep'];
+                            $index = $currentStep - 1;
+                            $pertanyaanId = $this->soals[$index]['id'];
+                            $jawabanId = $this->jawaban[$index];
 
-                        $this->form->statePath('currentStep')->increment();
-                    });
-            })
-            ->submitAction(new HtmlString(Blade::render(<<<BLADE
-            <x-filament::button
-                wire:click="selesaiKuis"
-                type="submit"
-                size="sm"
-                label="Selesai"
-            >
-               Selesai
-            </x-filament::button>
-        BLADE)))
+                            $this->simpanJawaban($index, $pertanyaanId, $jawabanId);
+
+                            $this->form->statePath('currentStep')->increment();
+                        });
+                })
+                ->submitAction(new HtmlString(Blade::render(<<<BLADE
+        <x-filament::button
+            wire:click="selesaiKuis"
+            type="submit"
+            size="sm"
+            label="Selesai"
+        >
+           Selesai
+        </x-filament::button>
+    BLADE)))
         ];
     }
 
@@ -124,23 +131,28 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
         // Check if the current time is past the quiz end time
         if (Carbon::now('Asia/Jakarta')->greaterThan($this->kuis->waktu_selesai)) {
             session()->flash('error', 'Waktu pengerjaan kuis telah berakhir.');
-            $this->hasilKuis->update(['status' => 'expired']);
-            return;
+            $this->hasilKuis->update([
+                'status' => 'expired',
+                'waktu_selesai' => now("Asia/Jakarta"),]);
+            return redirect()->route('filament.siswa.pages.quiz-result.{slugQuiz}', ['slugQuiz' => $this->slugQuiz]);
         }
 
         DB::transaction(function () use ($index, $pertanyaanId, $jawabanId) {
-            JawabanSiswa::updateOrCreate([
-                'id_hasil_kuis' => $this->hasilKuis->id,
-                'id_pertanyaan' => $pertanyaanId,
-            ], [
-                'id_jawaban' => $jawabanId,
-            ]);
-
-            $jawabanBenar = Jawaban::where('id', $jawabanId)
-                ->where('jawaban_benar', true)
-                ->exists();
-            if ($jawabanBenar) {
-                $this->hasilKuis->increment('skor', $this->soals[$index]['bobot']);
+            // Only save the answer if the student has selected an answer
+            if ($jawabanId !== null) {
+                JawabanSiswa::updateOrCreate([
+                    'id_hasil_kuis' => $this->hasilKuis->id,
+                    'id_pertanyaan' => $pertanyaanId,
+                ], [
+                    'id_jawaban' => $jawabanId,
+                ]);
+    
+                $jawabanBenar = Jawaban::where('id', $jawabanId)
+                    ->where('jawaban_benar', true)
+                    ->exists();
+                if ($jawabanBenar) {
+                    $this->hasilKuis->increment('skor', $this->soals[$index]['bobot']);
+                }
             }
         });
     }
@@ -151,7 +163,7 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
         if (Carbon::now('Asia/Jakarta')->greaterThan($this->kuis->waktu_selesai)) {
             session()->flash('error', 'Waktu pengerjaan kuis telah berakhir.');
             $this->hasilKuis->update(['status' => 'expired']);
-            return;
+            return redirect()->route('filament.siswa.pages.quiz-result.{slugQuiz}', ['slugQuiz' => $this->slugQuiz]);
         }
 
         $this->hasilKuis->update([

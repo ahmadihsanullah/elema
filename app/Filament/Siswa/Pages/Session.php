@@ -58,10 +58,15 @@ class Session extends Page
     }
     public function lanjutkanKuis($slug)
     {
+        $kuis = $this->sesiBelajar->kuis()->where('slug', $slug)->first();
+        if (now('Asia/Jakarta')->greaterThan($kuis->waktu_selesai)) {
+            return redirect()->route('filament.siswa.pages.quiz-result.{slugQuiz}', ['slugQuiz' => $slug])
+                ->with('message', 'Waktu kuis sudah habis. Silakan lihat hasil kuis.');
+        }
+    
         // Logic to continue the quiz
         return redirect()->route('filament.siswa.pages.show-quiz', ['slugQuiz' => $slug]);
     }
-
     public function startQuiz($slugQuiz){
         session()->put('slugQuiz', $slugQuiz);
         return redirect()->route('filament.siswa.pages.show-quiz');

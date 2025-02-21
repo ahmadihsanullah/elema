@@ -49,7 +49,7 @@ class FileMaterisRelationManager extends RelationManager
                 Tables\Actions\ViewAction::make()
                     ->url(fn(FileMateri $record) => Storage::url($record->file), true),
                     Tables\Actions\DeleteAction::make()
-                ->action(function (FileMateri $record) {
+                    ->action(function (FileMateri $record) {
                         Storage::disk('public')->delete($record->file);
                         $record->delete();
                     })

@@ -17,6 +17,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
+use Swis\Filament\Backgrounds\ImageProviders\MyImages;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -56,6 +58,21 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Blue,
-            ]);
+            ])
+            ->plugins([
+                FilamentBackgroundsPlugin::make()
+                    ->imageProvider(
+                        MyImages::make()
+                            ->directory('images/swisnl/filament-backgrounds/triangles')
+                    ),
+                ])
+                ->brandName('E-Learning MB')
+                ->brandLogo(asset('images/logo.jpg'))
+                ->renderHook(
+                    // This line tells us where to render it
+                    'panels::body.end',
+                    // This is the view that will be rendered
+                    fn () => view('filament.footer.footer'),
+                );
     }
 }

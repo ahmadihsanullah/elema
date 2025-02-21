@@ -92,51 +92,63 @@
 
                 @if ($kuis->count() > 0)
                     @foreach ($kuis as $k)
-                        @if (
-                            $k->waktu_mulai &&
-                                $k->waktu_selesai &&
-                                now('Asia/Jakarta')->greaterThanOrEqualTo($k->waktu_mulai) &&
-                                now('Asia/Jakarta')->lessThanOrEqualTo($k->waktu_selesai))
-                            <x-filament::section class="mb-4">
-                                <x-slot name="heading">
-                                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $k->judul }}
-                                    </h1>
-                                </x-slot>
-                                <div class="prose max-w-none dark:prose-dark">
-                                    <p class="text-gray-900 dark:text-white">Deskripsi: {{ $k->deskripsi }}</p>
-                                    <p class="text-gray-900 dark:text-white">Intruksi Kuis</p>
-                                    <p class="text-gray-900 dark:text-white">Durasi: {{ $k->durasi }} menit</p>
-                                    <p class="text-gray-900 dark:text-white">Jumlah Soal:
-                                        {{ $k->pertanyaans()->count() }} soal</p>
-                                    <p class="text-gray-900 dark:text-white">Petunjuk: Pastikan Anda mengerjakan semua
-                                        soal dengan seksama. Waktu akan dimulai setelah Anda memulai kuis ini.</p>
-                                    <p class="text-gray-900 dark:text-white">Waktu Mulai: {{ $k->waktu_mulai }}</p>
-                                    <p class="text-gray-900 dark:text-white">Waktu Selesai: {{ $k->waktu_selesai }}</p>
-                                </div>
-                                <!-- Tombol untuk memulai kuis atau melihat hasil -->
-                                @php
-                                    $hasilKuis = $k->hasilKuis->where('id_siswa', auth()->id())->first();
-                                @endphp
-                                @if ($hasilKuis)
-                                    @if ($hasilKuis->status == 'completed')
-                                        <x-filament::button color="info" wire:click="lihatHasil('{{ $k->slug }}')"
-                                            class="mt-3" icon="heroicon-m-arrow-top-right-on-square" icon-position="after">
-                                            Lihat Hasil
-                                        </x-filament::button>
-                                    @elseif ($hasilKuis->status == 'in_progress')
-                                        <x-filament::button color="info" wire:click="lanjutkanKuis('{{ $k->slug }}')"
-                                            class="mt-3">
+                        <x-filament::section class="mb-4">
+                            <x-slot name="heading">
+                                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $k->judul }}</h1>
+                            </x-slot>
+                            <div class="prose max-w-none dark:prose-dark">
+                                <p class="text-gray-900 dark:text-white">Deskripsi: {{ $k->deskripsi }}</p>
+                                <p class="text-gray-900 dark:text-white">Intruksi Kuis</p>
+                                <p class="text-gray-900 dark:text-white">Durasi: {{ $k->durasi }} menit</p>
+                                <p class="text-gray-900 dark:text-white">Jumlah Soal: {{ $k->pertanyaans()->count() }}
+                                    soal</p>
+                                <p class="text-gray-900 dark:text-white">Petunjuk: Pastikan Anda mengerjakan semua soal
+                                    dengan seksama. Waktu akan dimulai setelah Anda memulai kuis ini.</p>
+                                <p class="text-gray-900 dark:text-white">Waktu Mulai: {{ $k->waktu_mulai }}</p>
+                                <p class="text-gray-900 dark:text-white">Waktu Selesai: {{ $k->waktu_selesai }}</p>
+                            </div>
+                            <!-- Tombol untuk memulai kuis atau melihat hasil -->
+                            @php
+                                $hasilKuis = $k->hasilKuis->where('id_siswa', auth()->id())->first();
+                            @endphp
+                            @if ($hasilKuis)
+                                @if ($hasilKuis->status == 'completed')
+                                    <x-filament::button color="info" wire:click="lihatHasil('{{ $k->slug }}')"
+                                        class="mt-3" icon="heroicon-m-arrow-top-right-on-square"
+                                        icon-position="after">
+                                        Lihat Hasil
+                                    </x-filament::button>
+                                @elseif ($hasilKuis->status == 'in_progress')
+                                    @if (now('Asia/Jakarta')->lessThanOrEqualTo($k->waktu_selesai))
+                                        <x-filament::button color="info"
+                                            wire:click="lanjutkanKuis('{{ $k->slug }}')" class="mt-3">
                                             Lanjutkan Kuis
                                         </x-filament::button>
+                                    @else
+                                        <x-filament::button color="info"
+                                            wire:click="lihatHasil('{{ $k->slug }}')" class="mt-3">
+                                            Waktu Habis - Lihat Hasil
+                                        </x-filament::button>
                                     @endif
-                                @else
+                                @elseif ($hasilKuis->status == 'expired')
+                                    <x-filament::button color="info" wire:click="lihatHasil('{{ $k->slug }}')"
+                                        class="mt-3">
+                                        Waktu Habis - Lihat Hasil
+                                    </x-filament::button>
+                                @endif
+                            @else
+                                @if (now('Asia/Jakarta')->lessThanOrEqualTo($k->waktu_selesai))
                                     <x-filament::button color="info" wire:click="startQuiz('{{ $k->slug }}')"
                                         class="mt-3">
                                         Mulai Kuis
                                     </x-filament::button>
+                                @else
+                                    <x-filament::button color="info" class="mt-3" disabled>
+                                        Kuis Selesai
+                                    </x-filament::button>
                                 @endif
-                            </x-filament::section>
-                        @endif
+                            @endif
+                        </x-filament::section>
                     @endforeach
                 @else
                     <!-- Pesan Jika Tidak Ada Kuis -->

@@ -48,8 +48,12 @@ class KuisResource extends Resource
                         ->maxLength(255),
                     Forms\Components\Textarea::make('deskripsi')
                         ->columnSpanFull(),
-                    Forms\Components\DateTimePicker::make('waktu_mulai'),
-                    Forms\Components\DateTimePicker::make('waktu_selesai'),
+                    Forms\Components\DateTimePicker::make('waktu_mulai')
+                    ->required()
+                    ,
+                    Forms\Components\DateTimePicker::make('waktu_selesai')
+                    ->required()
+                    ,
                     Forms\Components\TextInput::make('nilai_minimal')
                         ->required()
                         ->numeric()

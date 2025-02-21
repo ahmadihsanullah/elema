@@ -31,9 +31,10 @@ class SesiBelajarResource extends Resource
     protected static ?string $model = SesiBelajar::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-puzzle-piece';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 1;  
 
-    
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Form $form): Form
     {
         return $form

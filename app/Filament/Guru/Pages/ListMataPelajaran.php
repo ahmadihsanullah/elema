@@ -28,49 +28,57 @@ class ListMataPelajaran extends Page implements HasActions
     {
         $guru = Auth::user();
 
-        // Ambil tahun pelajaran aktif dengan error handling
-        $tahunPelajaranAktif = TahunPelajaran::where('aktif', true)->first();
-        if (!$tahunPelajaranAktif) {
-            throw new \Exception("Tahun pelajaran aktif tidak ditemukan!");
-        }
+        try {
+            // Ambil tahun pelajaran aktif dengan error handling
+            $tahunPelajaranAktif = TahunPelajaran::where('aktif', true)->first();
+            if (!$tahunPelajaranAktif) {
+                throw new \Exception("Tahun pelajaran aktif tidak ditemukan!");
+            }
 
-        // Query dengan select untuk optimasi
-        $jadwalByMataPelajaran = JadwalPelajaran::where('id_tahun_pelajaran', $tahunPelajaranAktif->id)
-            ->whereHas('guruMataPelajaran', function ($query) use ($guru) {
-                $query->where('id_guru', $guru->id);
-            })
-            ->with([
-                'guruMataPelajaran' => function ($query) {
-                    $query->select('id', 'id_guru', 'id_mata_pelajaran', 'slug')
-                        ->with([
-                            'mataPelajaran:id,nama',
-                            'guru:id,name'
-                        ]);
-                },
-                'kelas:id,nama'
-            ])
-            ->get()
-            ->groupBy('guruMataPelajaran.mataPelajaran.id');
-
-        // Transform data
-        $this->mataPelajaran = $jadwalByMataPelajaran->map(function ($jadwals) {
-            $firstJadwal = $jadwals->first();
-            $mataPelajaran = $firstJadwal->guruMataPelajaran->mataPelajaran;
-            $guru = $firstJadwal->guruMataPelajaran->guru;
-            return [
-                'slug_guru_mapel' => $firstJadwal->guruMataPelajaran->slug,
-                'mata_pelajaran_id' => $mataPelajaran->id,
-                'mata_pelajaran' => $mataPelajaran->nama,
-                'guru' => $guru->name,
-                'jadwals' => $jadwals->map(function ($jadwal) {
-                    return [
-                        'jadwal_id' => $jadwal->id,
-                        'kelas' => $jadwal->kelas->nama,
-                        'hari' => $jadwal->hari,
-                    ];
+            // Query dengan select untuk optimasi
+            $jadwalByMataPelajaran = JadwalPelajaran::where('id_tahun_pelajaran', $tahunPelajaranAktif->id)
+                ->whereHas('guruMataPelajaran', function ($query) use ($guru) {
+                    $query->where('id_guru', $guru->id);
                 })
-            ];
-        })->values();
+                ->with([
+                    'guruMataPelajaran' => function ($query) {
+                        $query->select('id', 'id_guru', 'id_mata_pelajaran', 'slug')
+                            ->with([
+                                'mataPelajaran:id,nama',
+                                'guru:id,name'
+                            ]);
+                    },
+                    'kelas:id,nama'
+                ])
+                ->get()
+                ->groupBy('guruMataPelajaran.mataPelajaran.id');
+
+            // Transform data
+            $this->mataPelajaran = $jadwalByMataPelajaran->map(function ($jadwals) {
+                $firstJadwal = $jadwals->first();
+                $mataPelajaran = $firstJadwal->guruMataPelajaran->mataPelajaran;
+                $guru = $firstJadwal->guruMataPelajaran->guru;
+                return [
+                    'slug_guru_mapel' => $firstJadwal->guruMataPelajaran->slug,
+                    'mata_pelajaran_id' => $mataPelajaran->id,
+                    'mata_pelajaran' => $mataPelajaran->nama,
+                    'guru' => $guru->name,
+                    'jadwals' => $jadwals->map(function ($jadwal) {
+                        return [
+                            'jadwal_id' => $jadwal->id,
+                            'kelas' => $jadwal->kelas->nama,
+                            'hari' => $jadwal->hari,
+                        ];
+                    })
+                ];
+            })->values();
+        } catch (\Exception $e) {
+            Notification::make()
+                ->title('Error')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+        }
     }
 
     public function KelolaJadwal($slugGuruMapel)

@@ -11,7 +11,8 @@ class Materi extends Model
     public $incrementing = true; 
     public $timestamps = false; 
 
-    public function sesiBelajar(): BelongsTo{
+    public function sesiBelajar(): BelongsTo
+    {
         return $this->belongsTo(SesiBelajar::class);
     }
 }
