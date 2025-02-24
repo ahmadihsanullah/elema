@@ -37,8 +37,6 @@ class PertanyaanResource extends Resource
                 Forms\Components\TextInput::make('pertanyaan')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('penjelasan')
-                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('bobot')
                     ->required()
                     ->numeric(),
@@ -54,8 +52,6 @@ class PertanyaanResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('pertanyaan')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('aktif')
-                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

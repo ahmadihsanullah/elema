@@ -10,6 +10,7 @@ class EditKuis extends EditRecord
 {
     protected static string $resource = KuisResource::class;
 
+    
     protected function getHeaderActions(): array
     {
         return [

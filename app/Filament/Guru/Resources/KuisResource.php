@@ -22,7 +22,9 @@ class KuisResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-fire';
 
     protected static ?int $navigationSort = 2;
-    
+
+    public $import_file;
+
     public static function getEloquentQuery(): Builder
     {
         $query = static::getModel()::query();
@@ -30,11 +32,11 @@ class KuisResource extends Resource
         if (Auth::user()) {
             $query->where('id_guru', Auth::id());
         }
-
+        
         return $query;
     }
 
-    
+
 
     public static function form(Form $form): Form
     {
@@ -42,17 +44,17 @@ class KuisResource extends Resource
             ->schema([
                 Section::make('Kuis')->schema([
                     Forms\Components\Hidden::make('id_guru')
-                    ->default(Auth::id()),
+                        ->default(Auth::id()),
                     Forms\Components\TextInput::make('judul')
                         ->required()
                         ->maxLength(255),
                     Forms\Components\Textarea::make('deskripsi')
                         ->columnSpanFull(),
                     Forms\Components\DateTimePicker::make('waktu_mulai')
-                    ->required()
+                        ->required()
                     ,
                     Forms\Components\DateTimePicker::make('waktu_selesai')
-                    ->required()
+                        ->required()
                     ,
                     Forms\Components\TextInput::make('nilai_minimal')
                         ->required()
@@ -64,10 +66,12 @@ class KuisResource extends Resource
                         ->numeric()
                         ->label('Durasi Pengerjaan(menit)'),
                     Forms\Components\Toggle::make('acak_soal')
-                        ->required(),
+                        ->required()
                 ])->columns(2)
             ]);
     }
+
+
 
     public static function table(Table $table): Table
     {
