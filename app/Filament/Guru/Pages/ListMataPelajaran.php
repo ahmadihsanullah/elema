@@ -52,7 +52,6 @@ class ListMataPelajaran extends Page implements HasActions
                 ])
                 ->get()
                 ->groupBy('guruMataPelajaran.mataPelajaran.id');
-
             // Transform data
             $this->mataPelajaran = $jadwalByMataPelajaran->map(function ($jadwals) {
                 $firstJadwal = $jadwals->first();
@@ -66,6 +65,7 @@ class ListMataPelajaran extends Page implements HasActions
                     'jadwals' => $jadwals->map(function ($jadwal) {
                         return [
                             'jadwal_id' => $jadwal->id,
+                            'id_kelas' => $jadwal->kelas->id,
                             'kelas' => $jadwal->kelas->nama,
                             'hari' => $jadwal->hari,
                         ];
@@ -84,5 +84,9 @@ class ListMataPelajaran extends Page implements HasActions
     public function KelolaJadwal($slugGuruMapel)
     {
         return redirect()->route('filament.guru.pages.mata-pelajaran.{slugGuruMapel}', ['slugGuruMapel' => $slugGuruMapel]);
+    }
+    public function rekapNilai($slug, $kelas)
+    {
+        return redirect()->route('filament.guru.pages.list-rekap-nilai.{slug}', ['slug' => $slug, 'kelas'=> $kelas]);
     }
 }

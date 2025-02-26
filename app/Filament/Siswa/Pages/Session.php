@@ -13,7 +13,7 @@ class Session extends Page
     protected static string $view = 'filament.siswa.pages.session';
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static ?string $title = '';
+    protected static ?string $title = 'sesi belajar';
 
     public $materi;
     public $tugas;
