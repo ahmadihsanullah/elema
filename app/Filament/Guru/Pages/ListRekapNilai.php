@@ -67,24 +67,33 @@ class ListRekapNilai extends Page
                             break; // Berhenti setelah menemukan nilai yang bukan 0
                         }
                     }
+                }else{
+                    $nilaiTugasSiswa = "tidak tersedia";
                 }
         
                 // Ambil nilai kuis dari relasi BelongsToMany (pivot)
                 $nilaiKuis = null;
-                foreach ($sesi->kuis as $kuis) {
-                    // Ambil hasil kuis untuk siswa tertentu
-                    $hasilKuis = $kuis->hasilKuis()->where('id_siswa', $siswa->id)->first();
-                    if ($hasilKuis) {
-                        $nilaiKuis = $hasilKuis->skor; // Jika ditemukan, ambil nilai kuis siswa
-                        break; // Keluar dari loop setelah menemukan hasil kuis
+                if($sesi->kuis->isNotEmpty()) {
+                    foreach ($sesi->kuis as $kuis) {
+                        // Ambil hasil kuis untuk siswa tertentu
+                            $hasilKuis = $kuis->hasilKuis()->where('id_siswa', $siswa->id)->first();
+                            if ($hasilKuis) {
+                                $nilaiKuis = $hasilKuis->skor; // Jika ditemukan, ambil nilai kuis siswa
+                                break; // Keluar dari loop setelah menemukan hasil kuis
+                            }else{
+                                $nilaiKuis = 0;
+                            }
                     }
+                }else{
+                    $nilaiKuis = "tidak tersedia";
                 }
+
         
                 // Masukkan nilai tugas dan kuis ke dalam array
                 $nilaiSiswa['nilai_sesi'][] = [
                     'sesi' => $sesi->nama_sesi,  // Nama sesi belajar
                     'nilai_tugas' => $nilaiTugasSiswa, // Nilai tugas (jika ada tugas yang nilainya bukan 0)
-                    'nilai_kuis' => $nilaiKuis ?? '0', // Nilai kuis (jika ada)
+                    'nilai_kuis' => $nilaiKuis, // Nilai kuis (jika ada)
                 ];
             }
         
