@@ -1,6 +1,7 @@
 <?php
 namespace App\Filament\Guru\Pages;
 
+use App\Exports\SiswaNilaiExport;
 use App\Models\GuruMataPelajaran;
 use App\Models\HasilKuis;
 use App\Models\Kelas;
@@ -8,6 +9,7 @@ use App\Models\Kuis;
 use App\Models\PengumpulanTugas;
 use App\Models\Siswa;
 use Filament\Pages\Page;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ListRekapNilai extends Page
 {
@@ -20,89 +22,171 @@ class ListRekapNilai extends Page
 
     public $guruMapel;
     public $idKelas;
+    public $kelas;
     public $siswaNilai = [];
 
     public function mount($slug)
     {
-        // Mengambil data GuruMataPelajaran beserta relasi ke sesiBelajar
-        $this->guruMapel = GuruMataPelajaran::query()
+        // Ambil data GuruMataPelajaran dan Kelas
+        $this->guruMapel = $this->getGuruMataPelajaran($slug);
+        $this->kelas = $this->getKelas();
+
+        // Ambil daftar siswa dan proses nilainya
+        $siswaList = $this->getSiswaList();
+        $this->siswaNilai = $this->processNilaiSiswa($siswaList);
+    }
+
+    protected function getGuruMataPelajaran($slug)
+    {
+        // Mengambil data GuruMataPelajaran beserta relasi ke sesiBelajar dan kuis.hasilKuis
+        return GuruMataPelajaran::query()
             ->where('slug', $slug)
             ->with([
                 'mataPelajaran',
-                 'sesiBelajar.kuis',
-                  ]) // Tambahkan eager load relasi tugas dan kuis
+                'sesiBelajar.kuis.hasilKuis',
+                'sesiBelajar.tugas',
+            ])
             ->firstOrFail();
+    }
 
+    protected function getKelas()
+    {
         // Ambil ID Kelas dari query string dan cek apakah kelas ditemukan
         $this->idKelas = request()->query('kelas');
-        $kelas = Kelas::findOrFail($this->idKelas);
+        return Kelas::findOrFail($this->idKelas);
+    }
 
-        // Inisialisasi list nilai siswa
+    protected function getSiswaList()
+    {
+        // Ambil daftar siswa beserta relasi pengumpulan tugas dan hasil kuis
+        return Siswa::where('id_kelas', request()->query('kelas'))
+            ->get();
+    }
+
+    protected function processNilaiSiswa($siswaList)
+    {
         $listNilaiSiswa = [];
 
-        // Ambil daftar siswa dalam kelas
-        $siswaList = Siswa::where('id_kelas', $kelas->id)->get();
-
         foreach ($siswaList as $siswa) {
-            $nilaiSiswa = [
-                'nama_siswa' => $siswa->name,
-                'nilai_sesi' => [], // Untuk menyimpan nilai tugas dan kuis per sesi
-            ];
-        
-            foreach ($this->guruMapel->sesiBelajar as $sesi) {
-                // Ambil semua tugas dari sesi ini
-                $tugasList = $sesi->tugas()->get(); // Ambil semua tugas dari sesi (jika ada)
-                $nilaiTugasSiswa = 0; // Default nilai 0
-        
-                if ($tugasList->isNotEmpty()) {
-                    foreach ($tugasList as $tugas) {
-                        // Ambil nilai tugas untuk siswa dari PengumpulanTugas
-                        $nilaiTugas = PengumpulanTugas::where('id_siswa', $siswa->id)
-                            ->where('id_tugas', $tugas->id)
-                            ->first();
-        
-                        // Jika nilai tugas siswa bukan 0, maka ambil nilai tersebut
-                        if (optional($nilaiTugas)->nilai > 0) {
-                            $nilaiTugasSiswa = $nilaiTugas->nilai;
-                            break; // Berhenti setelah menemukan nilai yang bukan 0
-                        }
-                    }
-                }else{
-                    $nilaiTugasSiswa = "tidak tersedia";
-                }
-        
-                // Ambil nilai kuis dari relasi BelongsToMany (pivot)
-                $nilaiKuis = null;
-                if($sesi->kuis->isNotEmpty()) {
-                    foreach ($sesi->kuis as $kuis) {
-                        // Ambil hasil kuis untuk siswa tertentu
-                            $hasilKuis = $kuis->hasilKuis()->where('id_siswa', $siswa->id)->first();
-                            if ($hasilKuis) {
-                                $nilaiKuis = $hasilKuis->skor; // Jika ditemukan, ambil nilai kuis siswa
-                                break; // Keluar dari loop setelah menemukan hasil kuis
-                            }else{
-                                $nilaiKuis = 0;
-                            }
-                    }
-                }else{
-                    $nilaiKuis = "tidak tersedia";
-                }
-
-        
-                // Masukkan nilai tugas dan kuis ke dalam array
-                $nilaiSiswa['nilai_sesi'][] = [
-                    'sesi' => $sesi->nama_sesi,  // Nama sesi belajar
-                    'nilai_tugas' => $nilaiTugasSiswa, // Nilai tugas (jika ada tugas yang nilainya bukan 0)
-                    'nilai_kuis' => $nilaiKuis, // Nilai kuis (jika ada)
-                ];
-            }
-        
-            // Tambahkan ke list nilai siswa
+            $nilaiSiswa = $this->getNilaiSiswa($siswa);
             $listNilaiSiswa[] = $nilaiSiswa;
         }
+
+        return $listNilaiSiswa;
+    }
+
+    protected function getNilaiSiswa($siswa)
+    {
+        // Inisialisasi nilai siswa
+        $nilaiSiswa = [
+            'nama_siswa' => $siswa->name,
+            'mata_pelajaran' => $this->guruMapel->mataPelajaran->nama,
+            'kelas' => $this->kelas->nama,
+            'nilai_sesi' => [],
+        ];
+
+        // Proses nilai per sesi belajar
+        foreach ($this->guruMapel->sesiBelajar as $sesi) {
+            $nilaiSiswa['nilai_sesi'][] = $this->getNilaiPerSesi($siswa, $sesi);
+        }
+
+        return $nilaiSiswa;
+    }
+
+    protected function getNilaiPerSesi($siswa, $sesi)
+    {
+        // Ambil nilai tugas
+        $nilaiTugasSiswa = $this->getNilaiTugas($siswa, $sesi);
+
+        // Ambil nilai kuis
+        $nilaiKuis = $this->getNilaiKuis($siswa, $sesi);
+
+        // Return nilai sesi dalam bentuk array
+        return [
+            'sesi' => $sesi->judul,
+            'nilai_tugas' => $nilaiTugasSiswa,
+            'nilai_kuis' => $nilaiKuis,
+        ];
+    }
+
+    protected function getNilaiTugas($siswa, $sesi)
+    {
+        // Ambil semua tugas dari sesi ini dengan eager loading pengumpulan tugas untuk siswa tertentu
+        $tugasList = $sesi->tugas()->with([
+            'pengumpulanTugas' => function ($query) use ($siswa) {
+                $query->where('id_siswa', $siswa->id);
+            }
+        ])->get();
         
-        // Simpan list nilai siswa ke dalam properti kelas
-        $this->siswaNilai = $listNilaiSiswa;
-        
+        $totalNilaiTugasSiswa = 0; // Default nilai 0
+        // Cek apakah ada tugas dalam sesi ini
+        if ($tugasList->isNotEmpty()) {
+            foreach ($tugasList as $tugas) {
+                // Ambil data pengumpulan tugas yang terkait dengan siswa ini
+                $pengumpulanTugas = $tugas->pengumpulanTugas->first();
+
+                // Jika ada pengumpulan tugas dan nilainya lebih dari 0, tambahkan ke total nilai
+                if (optional($pengumpulanTugas)->nilai > 0) {
+                    $totalNilaiTugasSiswa += $pengumpulanTugas->nilai;
+                }
+            }
+
+            // Jika ada nilai tugas yang valid, return totalnya
+            if ($totalNilaiTugasSiswa > 0) {
+                return $totalNilaiTugasSiswa;
+            } else {
+                return 0;
+            }
+        }
+
+        return "tidak tersedia"; // Jika tidak ada tugas atau nilai tugas 0
+    }
+
+
+
+
+    protected function getNilaiKuis($siswa, $sesi)
+    {
+        // Cek apakah sesi memiliki kuis
+        if ($sesi->kuis->isNotEmpty()) {
+            // Inisialisasi variabel untuk menyimpan nilai kuis siswa
+            $nilaiKuisSiswa = null;
+
+            // Loop melalui semua kuis dalam sesi
+            foreach ($sesi->kuis as $kuis) {
+                // Ambil hasil kuis untuk siswa tertentu dari data yang sudah di-eager load
+                $hasilKuis = $kuis->hasilKuis
+                    ->where('id_siswa', $siswa->id)
+                    ->first();
+
+                // Jika ditemukan hasil kuis untuk siswa, simpan nilainya
+                if ($hasilKuis) {
+                    $nilaiKuisSiswa = $hasilKuis->skor;
+                    break; // Keluar dari loop setelah menemukan hasil kuis yang valid
+                }
+            }
+
+            // Jika ada nilai kuis yang ditemukan, kembalikan nilai tersebut, jika tidak return 0
+            return $nilaiKuisSiswa !== null ? $nilaiKuisSiswa : 0;
+        }
+
+        return "tidak tersedia"; // Jika tidak ada kuis dalam sesi ini
+    }
+
+
+
+    public function exportNilaiSiswa()
+    {
+        // Ambil data nilai siswa, misalnya dari service atau query
+        $siswaNilai = $this->getSiswaNilai(); // Ganti dengan fungsi yang sesuai
+
+        // Export file dalam format Excel
+        return Excel::download(new SiswaNilaiExport($siswaNilai), 'nilai-siswa.xlsx');
+    }
+
+    // Implementasi method untuk mengambil data siswa dan nilai
+    protected function getSiswaNilai()
+    {
+        return $this->siswaNilai;
     }
 }

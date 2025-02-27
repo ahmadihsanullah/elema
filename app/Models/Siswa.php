@@ -22,11 +22,12 @@ class Siswa extends Authenticatable
         return $this->belongsTo(Kelas::class, 'id_kelas', 'id');
     }
 
-    public function pengumpulanTugas(): BelongsToMany{
-        return $this->belongsToMany(PengumpulanTugas::class, 'id_siswa', 'id');
+    public function tugas(): BelongsToMany{
+        return $this->belongsToMany(Tugas::class, 'pengumpulan_tugas', 'id_siswa', 'id_tugas');
     }
+    
 
-    public function hasilKuis(): BelongsToMany{
-        return $this->belongsToMany(HasilKuis::class, 'id_siswa', 'id');
+    public function kuis(): BelongsToMany{
+        return $this->belongsToMany(Kuis::class, 'hasil_kuis', 'id_siswa', 'id_kuis');
     }
 }

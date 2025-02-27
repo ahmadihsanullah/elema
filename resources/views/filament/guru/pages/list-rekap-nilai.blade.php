@@ -1,18 +1,29 @@
 <x-filament::page>
     <div class="space-y-4">
-        <h2 class="text-2xl font-bold">Rekap Nilai - {{ $guruMapel->mataPelajaran->nama }}</h2>
-        
-        @if(!empty($siswaNilai))
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold mb-4">Rekap Nilai - {{ $guruMapel->mataPelajaran->nama }}</h2>
+            <x-filament::link wire:click="exportNilaiSiswa"
+            icon="heroicon-m-sparkles"
+            tag="button">
+                Export
+            </x-filament::link>
+        </div>
+        @if (!empty($siswaNilai))
             <div class="overflow-x-auto">
                 <table class="table-auto w-full text-left border border-gray-200">
                     <thead>
-                        <tr class="bg-gray-100">
-                            <th class="px-4 py-2">Nama Siswa</th>
+                        <tr class="bg-gray-100 dark:bg-gray-700">
+                            <th class="px-4 py-2 text-black dark:text-white">Nama Siswa</th>
                             @foreach ($guruMapel->sesiBelajar as $sesi)
-                                <th class="px-4 py-2 text-center">Tugas ({{ $sesi->judul }})</th>
-                                <th class="px-4 py-2 text-center">Kuis ({{ $sesi->judul }})</th>
+                                <th class="px-4 py-2 text-center text-black dark:text-white">
+                                    Tugas ({{ $sesi->judul }})
+                                </th>
+                                <th class="px-4 py-2 text-center text-black dark:text-white">
+                                    Kuis ({{ $sesi->judul }})
+                                </th>
                             @endforeach
                         </tr>
+
                     </thead>
                     <tbody>
                         @foreach ($siswaNilai as $nilaiSiswa)

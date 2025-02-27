@@ -21,7 +21,9 @@ class Kuis extends Model
             $model->slug = Str::random(10);
         });
     }
-    
+    public function siswa(): BelongsToMany{
+        return $this->belongsToMany(Siswa::class, 'hasil_kuis', 'id_kuis', 'id_siswa');
+    }
     public function sesiBelajars(): BelongsToMany{
         return $this->belongsToMany(SesiBelajar::class,"kuis_sesi_belajar","id_kuis","id_sesi_belajar");
     }
