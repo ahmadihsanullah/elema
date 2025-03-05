@@ -77,9 +77,12 @@ class TugasRelationManager extends RelationManager
                 Action::make('review')
                     ->icon('heroicon-o-eye')
                     ->url(function ($record) {
-                        return route('filament.guru.pages.listPengumpulanTugas.{idTugas}', parameters: ['idTugas' => $record->id]);
-                    })
-                    ->openUrlInNewTab(),
+                        $activeRelationManager = url()->previous();
+                        return route('filament.guru.pages.listPengumpulanTugas.{idTugas}', parameters: [
+                            'idTugas' => $record->id,
+                            'activeRelationManager' => $activeRelationManager,
+                        ]);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

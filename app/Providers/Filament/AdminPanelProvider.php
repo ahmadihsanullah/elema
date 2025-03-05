@@ -65,14 +65,14 @@ class AdminPanelProvider extends PanelProvider
                         MyImages::make()
                             ->directory('images/swisnl/filament-backgrounds/triangles')
                     ),
-                ])
-                ->brandName('E-Learning MB')
-                ->brandLogo(asset('images/logo.jpg'))
-                ->renderHook(
-                    // This line tells us where to render it
-                    'panels::body.end',
-                    // This is the view that will be rendered
-                    fn () => view('filament.footer.footer'),
-                );
+            ])
+            ->brandName('E-Learning MB')
+            ->brandLogo(asset('images/logo1.png'))
+            ->renderHook(
+                // This line tells us where to render it
+                'panels::body.end',
+                // This is the view that will be rendered
+                fn() => view('filament.footer.footer'),
+            );
     }
 }

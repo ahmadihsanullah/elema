@@ -18,25 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class GuruResource extends Resource
 {
     protected static ?string $model = Guru::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationLabel = 'Guru';
-
     protected static ?string $navigationGroup = 'Master Data';
     protected static ?int $navigationSort = 2;
-
-    public static function getModelLabel(): string
-    {
-        return 'Guru';
-    }
-    
-    public static function getPluralModelLabel(): string
-    {
-        return 'Guru';
-    }
-
-
-
     public static function form(Form $form): Form
     {
         return $form
@@ -61,6 +46,15 @@ class GuruResource extends Resource
                 ])->columns(2)
             ]);
     }
+        public static function getModelLabel(): string
+    {
+        return 'Guru';
+    }
+    
+    public static function getPluralModelLabel(): string
+    {
+        return 'Guru';
+    }    
 
     public static function table(Table $table): Table
     {

@@ -12,6 +12,7 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -91,10 +92,11 @@ class KelolaMataPelajaran extends Page implements HasTable
                     ->searchable()
             ])
             ->actions([
-                Action::make('delete')
+                Action::make('kelola')
                 ->label('Kelola Sesi')
                 ->url(fn(SesiBelajar $record) => route('filament.guru.resources.sesi-belajars.edit', ['record' => $record->slug]))
-                ->icon('heroicon-o-arrow-up-right')
+                ->icon('heroicon-o-arrow-up-right'),
+                DeleteAction::make('delete')
             ])
             ->bulkActions([
                BulkActionGroup::make([

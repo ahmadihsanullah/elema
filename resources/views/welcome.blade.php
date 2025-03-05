@@ -54,14 +54,6 @@
 
             <nav id="nav"
                 class="absolute top-0 left-0 z-50 flex flex-col items-center justify-between hidden w-full h-64 pt-5 mt-24 text-sm text-gray-800 bg-white border-t border-gray-200 md:w-auto md:flex-row md:h-24 lg:text-base md:bg-transparent md:mt-0 md:border-none md:py-0 md:flex md:relative">
-                <a href="#"
-                    class="ml-0 mr-0 font-bold duration-100 md:ml-12 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">Home</a>
-                <a href="#features"
-                    class="mr-0 font-bold duration-100 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">Features</a>
-                <a href="#pricing"
-                    class="mr-0 font-bold duration-100 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">Pricing</a>
-                <a href="#testimonials"
-                    class="font-bold duration-100 transition-color hover:text-indigo-600">Testimonials</a>
                 <div class="flex flex-col block w-full font-medium border-t border-gray-200 md:hidden">
                     <a href="{{route('filament.siswa.pages.dashboard')}}" class="w-full py-2 font-bold text-center text-pink-500">Login</a>
                     <a href="#_"
@@ -138,17 +130,16 @@
                 class="z-30 flex flex-col items-center w-full max-w-xl pt-48 text-center lg:items-start lg:w-1/2 lg:pt-20 xl:pt-40 lg:text-left">
                 <h1 class="relative mb-4 text-3xl font-black leading-tight text-gray-900 sm:text-6xl xl:mb-8">
                     E-Learning SMK Mulia Buana</h1>
-                <p class="pr-0 mb-8 text-base text-gray-600 sm:text-lg xl:text-xl lg:pr-20">Are you ready to start your
-                    adventure and start building the next greatest SAAS app on the market?</p>
+                <p class="pr-0 mb-8 text-base text-gray-600 sm:text-lg xl:text-xl lg:pr-20">Belajar lebih efektif di E-Learning Mulia Buana</p>
                 <a href="{{ route('filament.siswa.pages.dashboard')}}"
                     class="relative self-start inline-block w-auto px-8 py-4 mx-auto mt-0 text-base font-bold text-white bg-indigo-600 border-t border-gray-200 rounded-md shadow-xl sm:mt-1 fold-bold lg:mx-0">Login</a>
                 <!-- Integrates with section -->
             </div>
             <div class="relative z-50 flex flex-col items-end justify-center w-full h-full lg:w-1/2 ms:pl-10">
                 <div class="container relative left-0 w-full max-w-4xl lg:absolute xl:max-w-6xl lg:w-screen">
-                    <img src="https://cdn.devdojo.com/images/september2020/macbook-mockup.png"
-                        class="w-full h-auto mt-20 mb-20 ml-0 lg:mt-24 xl:mt-40 lg:mb-0 lg:h-full lg:-ml-12">
-                </div>
+                    <img src="{{ asset('images/logo/image.png') }}"
+                        class="w-full h-auto mt-20 mb-20 ml-0 lg:mt-24 xl:mt-40 lg:mb-0 lg:h-full lg:-ml-12 rounded-lg">
+                </div>                
             </div>
         </div>
     </div>

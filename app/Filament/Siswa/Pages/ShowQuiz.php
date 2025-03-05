@@ -75,10 +75,8 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
         return [
             Wizard::make(
                 $this->soals->map(function ($soal, $index) {
-                    return Forms\Components\Wizard\Step::make( $index+1)
+                    return Forms\Components\Wizard\Step::make("soal ".$index+1)
                         ->schema([
-                            Forms\Components\Fieldset::make('Pertanyaan')
-                                ->schema([
                                     Forms\Components\Placeholder::make('pertanyaan')
                                         ->label('')
                                         ->content($soal['pertanyaan']),
@@ -89,10 +87,9 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
                                         ->afterStateUpdated(function ($state) use ($index, $soal) {
                                             $this->simpanJawaban($index, $soal['id'], $state);
                                         }),
-                                ]),
-                        ]);
+                        ])->icon('heroicon-o-document');
                 })->toArray()
-            )
+            )->skippable()
                 ->nextAction(function (Action $action) {
                     $action->label('Next')
                         ->action(function () {

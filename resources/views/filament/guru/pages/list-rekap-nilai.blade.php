@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-bold mb-4">Rekap Nilai - {{ $guruMapel->mataPelajaran->nama }}</h2>
             <x-filament::link wire:click="exportNilaiSiswa"
-            icon="heroicon-m-sparkles"
+            icon="heroicon-m-arrow-top-right-on-square"
             tag="button">
                 Export
             </x-filament::link>

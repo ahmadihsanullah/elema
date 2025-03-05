@@ -17,6 +17,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
+use Swis\Filament\Backgrounds\ImageProviders\MyImages;
 
 class SiswaPanelProvider extends PanelProvider
 {
@@ -59,12 +61,19 @@ class SiswaPanelProvider extends PanelProvider
                 'primary' => Color::Blue,
             ])
             ->profile()
-            ->brandLogo(asset('images/logo.jpg'))
+            ->brandLogo(asset('images/logo1.png'))
             ->renderHook(
                 // This line tells us where to render it
                 'panels::body.end',
                 // This is the view that will be rendered
                 fn () => view('filament.footer.footer'),
-            );;
+            )
+            ->plugins([
+                FilamentBackgroundsPlugin::make()
+                    ->imageProvider(
+                        MyImages::make()
+                            ->directory('images/logo')
+                    ),
+            ]);
     }
 }

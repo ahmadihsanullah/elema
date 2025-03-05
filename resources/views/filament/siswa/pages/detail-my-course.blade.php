@@ -3,15 +3,15 @@
         <x-filament::link :href="route('filament.siswa.pages.my-courses')" color="info">
             Kembali
         </x-filament::link>
-       </div>
+    </div>
     @foreach ($sesiBelajars as $sesiBelajar)
-    <x-filament::section>
-        <div class="flex justify-between items-center">
-            <span>{{ $sesiBelajar->judul }}</span>
-            <x-filament::button color="primary" wire:click="sesiBelajar('{{ $sesiBelajar['slug']  }}')" class="ml-auto">
-                Lihat Sesi
-            </x-filament::button>
-        </div>
-    </x-filament::section>
+        <x-filament::section>
+            <div class="flex justify-between items-center">
+                <span>{{ $sesiBelajar->judul }}</span>
+                <x-filament::button color="primary" wire:click="sesiBelajar('{{ $sesiBelajar['slug'] }}')" class="ml-auto">
+                    Lihat Sesi
+                </x-filament::button>
+            </div>
+        </x-filament::section>
     @endforeach
 </x-filament-panels::page>

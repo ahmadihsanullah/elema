@@ -14,7 +14,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
-
+use Filament\Resources\Tables\Columns;
 class ListPengumpulanTugas extends Page implements HasTable
 {
     use InteractsWithTable;
@@ -29,11 +29,17 @@ class ListPengumpulanTugas extends Page implements HasTable
     public $pengumpulanTugas;
     public $idTugas;
 
+    public $deadline;
+    public $activeRelationManager;
+
     public function mount($idTugas): void
     {
         $this->idTugas = $idTugas;
         $this->tugas = Tugas::query()->where('id', $idTugas)->first();
         $this->pengumpulanTugas = PengumpulanTugas::query()->where('id_tugas', $idTugas)->get();
+        $this->deadline = \Carbon\Carbon::parse($this->tugas->deadline);
+        // Ambil parameter 'activeRelationManager' dari URL
+        $this->activeRelationManager = request()->query('activeRelationManager');
     }
 
     public function table(Table $table): Table
@@ -58,6 +64,20 @@ class ListPengumpulanTugas extends Page implements HasTable
                     ->label("Waktu Pengumpulan")
                     ->date('d/m/Y')
                     ->badge(),
+                IconColumn::make('Tepat Waktu')
+                ->getStateUsing(function (PengumpulanTugas $record){
+                    $createdAt = \Carbon\Carbon::parse($record->created_at);
+                    return $createdAt > $this->deadline;
+                }) // the column requires a state to be passed to it
+                ->icon(function(bool $state): string {
+                    if($state){
+                        return 'heroicon-m-x-circle';
+                    }else{
+                        return 'heroicon-m-check-badge';
+                    }
+                })
+                ->trueColor('primary')
+                ->falseColor('warning'),
                 IconColumn::make('edit_nilai')
                     ->getStateUsing(fn() => true) // the column requires a state to be passed to it
                     ->icon(fn(bool $state): string => 'heroicon-m-pencil-square') // always show the 'edit' icon

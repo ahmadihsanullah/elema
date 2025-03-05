@@ -29,8 +29,6 @@ class PertanyaansRelationManager extends RelationManager
                     ->required()
                     ->maxLength(255)
                     ->columnSpanFull(),
-                Forms\Components\Textarea::make('penjelasan')
-                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('bobot')
                     ->required(),
             ]);
