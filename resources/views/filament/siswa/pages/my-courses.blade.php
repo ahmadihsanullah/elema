@@ -1,7 +1,7 @@
 <x-filament-panels::page>
     <div class="flex justify-center mb-4">
-        <div class="relative w-full max-w-lg flex">
-            <x-filament::input.wrapper class="w-full">
+        <div class="relative w-full max-w-lg flex items-center">
+            <x-filament::input.wrapper class="w-full mr-2">
                 <x-filament::input type="text" wire:model="search" placeholder="Cari mata pelajaran..." class="w-full" />
             </x-filament::input.wrapper>
             <x-filament::button class="ml-2" wire:click="searchMataPelajaran">
@@ -36,7 +36,7 @@
                 @endforeach
             </div>
         @else
-            <p class="dark:text-white">Tidak ada mata pelajaran yang diajar saat ini.</p>
+            <p class="dark:text-white">Tidak ada mata pelajaran yang sesuai</p>
         @endif
     </div>
 </x-filament-panels::page>

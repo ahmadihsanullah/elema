@@ -49,7 +49,8 @@ class MataPelajaranResource extends Resource
                     ->maxLength(255)
                     ->unique(ignoreRecord:true),
                 ])->columns(2)
-            ]);
+            ])
+            ;
     }
 
     public static function table(Table $table): Table
