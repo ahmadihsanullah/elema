@@ -20,6 +20,8 @@ class MyCourses extends Page
     protected static ?string $title = null;
     public $siswa;
     public $search = '';
+    protected static bool $shouldRegisterNavigation = false;
+
 
     public function getMataPelajarans()
     {

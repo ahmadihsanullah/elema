@@ -2,7 +2,7 @@
 
 return [
 
-    'title' => 'Dasbor',
+    'title' => 'Home',
 
     'actions' => [
 

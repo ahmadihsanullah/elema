@@ -1,6 +1,6 @@
 <x-filament-panels::page>
     <div>
-        <x-filament::link :href="route('filament.siswa.pages.my-courses')" color="info">
+        <x-filament::link :href="route('filament.siswa.pages.dashboard')" color="info">
             Kembali
         </x-filament::link>
     </div>
