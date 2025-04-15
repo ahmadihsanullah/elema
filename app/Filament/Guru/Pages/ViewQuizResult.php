@@ -26,6 +26,7 @@ class ViewQuizResult extends Page implements HasTable
     protected static ?string $slug = 'view-quiz-result/{id}'; // Custom URL slug
     public $kuis;
     public $hasilKuis;
+    public $slugSesiBelajar;
 
     public function mount($id)
     {
@@ -37,6 +38,7 @@ class ViewQuizResult extends Page implements HasTable
                 ->where('id_kuis', $this->kuis->id)
                 ->get();
         }
+        $this->slugSesiBelajar = $this->kuis->sesiBelajars;
     }
     public function table(Table $table): Table
     {
@@ -74,7 +76,9 @@ class ViewQuizResult extends Page implements HasTable
 
     public function backToSession()
     {
-        return redirect()->route('filament.guru.resources.sesi-belajars.index');
+        return redirect()->route('filament.guru.resources.sesi-belajars.edit', 
+            $this->slugSesiBelajar,
+        );
 
     }
 

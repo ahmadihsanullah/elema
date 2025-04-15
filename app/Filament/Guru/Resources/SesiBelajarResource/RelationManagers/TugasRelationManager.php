@@ -62,7 +62,6 @@ class TugasRelationManager extends RelationManager
                             if (Storage::disk('public')->exists($file->file)) {
                                 Storage::disk('public')->delete($file->file);
                             }
-
                             // Hapus dari database
                             $file->delete();
                         }

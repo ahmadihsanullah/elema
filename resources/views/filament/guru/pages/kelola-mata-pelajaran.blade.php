@@ -20,15 +20,39 @@
             Simpan
         </x-filament::button>
     </x-filament::modal>
+    <x-slot name="heading">
+        Daftar Sesi Belajar
+    </x-slot>
 
-    <x-filament::section class="mt-6">
-        <x-slot name="heading">
-            Daftar Sesi Belajar
-        </x-slot>
+    <div class="grid sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4  gap-4">
+        @foreach ($sesiBelajar as $sesi)
+            <x-filament::section  icon="heroicon-o-clipboard-document-list" icon-color="info">
+                <x-slot name="heading">
+                    {{ $sesi['judul'] }}
+                </x-slot>
+                {{-- Content --}}
+                <x-filament::link color="primary" icon="heroicon-m-eye" :href="route('filament.guru.resources.sesi-belajars.edit', $sesi['slug'])">
+                    Detail Sesi
+                </x-filament::link>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-           {{$this->table}}
-        </div>
-    </x-filament::section>
+                <x-filament::modal id="hapus-sesi-modal">
+                    <x-slot name="trigger">
+                        <x-filament::link color="danger" icon="heroicon-m-trash">
+                            Hapus
+                        </x-filament::link>
+                    </x-slot>
+
+                    <x-slot name="heading">
+                        Hapus Sesi Pelajaran
+                    </x-slot>
+                    Apakah yakin ingin menghapus sesi {{ $sesi['judul'] }}?<br>
+
+                    <x-filament::button color="primary" wire:click="deleteSesiBelajar('{{ $sesi['id'] }}')"
+                        class="mt-6">
+                        Ya
+                    </x-filament::button>
+                </x-filament::modal>
+            </x-filament::section>
+        @endforeach
+    </div>
 </x-filament-panels::page>
-

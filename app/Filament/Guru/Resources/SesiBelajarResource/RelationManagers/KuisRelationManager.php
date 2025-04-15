@@ -40,13 +40,13 @@ class KuisRelationManager extends RelationManager
                 ->recordSelectOptionsQuery(fn (Builder $query) => $query->where('id_guru', Auth::id())),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make(),
-                Tables\Actions\ViewAction::make()
+                Tables\Actions\DetachAction::make()
+                    ,
+                Tables\Actions\ViewAction::make("lihat")
                     ->icon('heroicon-o-eye')
-                    ->url(fn (Kuis $record) => 
-                    route('filament.guru.pages.view-quiz-result.{id}', ['id' => $record->slug])
-                    )
-                    ->tooltip('View Students'),
+                    ->url(fn (Kuis $record) =>
+                    route('filament.guru.pages.view-quiz-result.{id}', ['id' => $record->slug]))
+                    ->tooltip('Lihat Hasil Kuis'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

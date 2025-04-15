@@ -22,4 +22,10 @@ class EditSesiBelajar extends EditRecord
     {
         return 'Kelola Sesi Belajar';
     }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+        ];
+    }
 }

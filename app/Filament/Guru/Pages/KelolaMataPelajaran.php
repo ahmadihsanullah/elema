@@ -19,9 +19,9 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 
-class KelolaMataPelajaran extends Page implements HasTable
+class KelolaMataPelajaran extends Page 
 {
-    use InteractsWithTable;
+    // use InteractsWithTable;
     use InteractsWithFormActions;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
@@ -43,6 +43,8 @@ class KelolaMataPelajaran extends Page implements HasTable
             abort(404);
         }
         $this->mataPelajaran = $this->guruMapel->mataPelajaran->nama;
+        $this->sesiBelajar = SesiBelajar::where('id_guru_mata_pelajaran', $this->guruMapel->id)->get()->toArray();
+
     }
 
     public function getFormSchema(): array
@@ -78,40 +80,33 @@ class KelolaMataPelajaran extends Page implements HasTable
         $this->dispatch('close-modal', id: 'tambah-sesi-modal');
 
         // Refresh the table
-        $this->dispatch('refresh-table');
+        $this->sesiBelajar = SesiBelajar::where('id_guru_mata_pelajaran', $this->guruMapel->id)->get()->toArray();
     }
 
-    public function table(Table $table): Table
+    public function deleteSesiBelajar($idSesiBelajar)
     {
-        return $table
-            ->query(fn() => SesiBelajar::where('id_guru_mata_pelajaran', $this->guruMapel->id))
-            ->columns([
-                TextColumn::make('judul')
-                    ->label('Sesi Belajar')
-                    ->getStateUsing(function (SesiBelajar $record) {
-                        return $record->judul;
-                    })
-                    ->color('primary')
-                    ->searchable()
-            ])
-            ->actions([
-                Action::make('kelola')
-                    ->label('Kelola Sesi')
-                    ->url(fn(SesiBelajar $record) => route('filament.guru.resources.sesi-belajars.edit', ['record' => $record->slug]))
-                    ->icon('heroicon-o-arrow-up-right'),
-                DeleteAction::make('delete')
-            ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+        $sesiBelajar = SesiBelajar::find($idSesiBelajar);
+
+        if ($sesiBelajar) {
+            $sesiBelajar->delete();
+
+            Notification::make()
+                ->success()
+                ->title('Berhasil')
+                ->body('Sesi Belajar berhasil dihapus.')
+                ->send();
+
+            // Refresh data sesi belajar
+            $this->sesiBelajar = SesiBelajar::where('id_guru_mata_pelajaran', $this->guruMapel->id)->get()->toArray();
+        } else {
+            Notification::make()
+                ->danger()
+                ->title('Error')
+                ->body('Sesi Belajar tidak ditemukan.')
+                ->send();
+        }
     }
-    protected function getSesiBelajarData(): array
-    {
-        $this->sesiBelajar = SesiBelajar::where('id_guru_mata_pelajaran', $this->guruMapel->id)->get();
-    
-        return $this->sesiBelajar->toArray();
-    }
+
+
 
 }
