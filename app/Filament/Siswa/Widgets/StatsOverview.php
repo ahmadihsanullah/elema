@@ -28,7 +28,7 @@ class StatsOverview extends BaseWidget
             })
             ->with([
                 'guruMataPelajaran' => function ($query) {
-                    $query->select('id', 'id_guru', 'id_mata_pelajaran')
+                    $query->select('id', 'id_guru', 'id_mata_pelajaran', 'slug') // Tambahkan 'slug' di sini
                         ->with([
                             'mataPelajaran:id,nama',
                             'guru:id,name',
@@ -37,32 +37,32 @@ class StatsOverview extends BaseWidget
             ])
             ->get()
             ->groupBy('guruMataPelajaran.id');
-        // dd($jadwalByMataPelajaran);
+
         $mataPelajaran = $jadwalByMataPelajaran->map(function ($jadwals) {
             $guruMapel = $jadwals->first()->guruMataPelajaran;
-            $slugMapel = GuruMataPelajaran::where('id', $guruMapel->id)->first()->slug;
             $hari = $jadwals->first()->hari;
+
             return [
                 'mata_pelajaran' => $guruMapel->mataPelajaran->nama,
                 'guru' => $guruMapel->guru->name,
                 'hari' => $hari,
-                'slug_mapel' => $slugMapel,
+                'slug_mapel' => $guruMapel->slug, // Ambil slug dari sini
             ];
-
         });
+
         return $mataPelajaran->map(function ($mapel) {
             return Stat::make(
                 'Hari: ' . $mapel['hari'],
                 new HtmlString('<span class="text-lg font-bold">' . e($mapel['mata_pelajaran']) . '</span>')
             )
-            ->description($mapel['guru'])
-            ->icon('heroicon-o-book-open')
-            ->color('primary')
-            ->extraAttributes([
-                'class' => 'cursor-pointer',
-                'wire:click' => 'myCourse(\'' . $mapel['slug_mapel'] . '\')',
-                'wire:loading.attr' => 'enabled',
-            ]);
+                ->description($mapel['guru'])
+                ->icon('heroicon-o-book-open')
+                ->color('primary')
+                ->extraAttributes([
+                    'class' => 'cursor-pointer',
+                    'wire:click' => 'myCourse(\'' . $mapel['slug_mapel'] . '\')',
+                    'wire:loading.attr' => 'enabled',
+                ]);
         })->toArray();
     }
     public function myCourse($slugMapel)

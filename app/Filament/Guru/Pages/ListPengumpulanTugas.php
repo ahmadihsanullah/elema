@@ -39,7 +39,8 @@ class ListPengumpulanTugas extends Page implements HasTable
         $this->pengumpulanTugas = PengumpulanTugas::query()->where('id_tugas', $idTugas)->get();
         $this->deadline = \Carbon\Carbon::parse($this->tugas->deadline);
         // Ambil parameter 'activeRelationManager' dari URL
-        $this->activeRelationManager = request()->query('activeRelationManager');
+        $this->activeRelationManager = session('activeRelationManager', route('filament.guru.resources.sesi-belajars.index')); // Ambil dari session, default jika kosong
+        session()->forget('activeRelationManager'); // Hapus dari session setelah digunakan
     }
 
     public function table(Table $table): Table

@@ -32,6 +32,7 @@ class KelolaMataPelajaran extends Page implements HasTable
     public $guruMapel;
     public $mataPelajaran;
     public $judul;
+    public $sesiBelajar;
 
     public function mount($slugGuruMapel)
     {
@@ -56,8 +57,8 @@ class KelolaMataPelajaran extends Page implements HasTable
     public function save()
     {
         $this->validate([
-           'judul' => 'required'
-        ]); 
+            'judul' => 'required'
+        ]);
 
         $guruMapel = GuruMataPelajaran::where('slug', $this->guruMapel->slug)->first();
 
@@ -73,6 +74,8 @@ class KelolaMataPelajaran extends Page implements HasTable
             ->title('Berhasil')
             ->body('Sesi Belajar berhasil ditambah.')
             ->send();
+        // Clear the form
+        $this->dispatch('close-modal', id: 'tambah-sesi-modal');
 
         // Refresh the table
         $this->dispatch('refresh-table');
@@ -81,7 +84,7 @@ class KelolaMataPelajaran extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
-        ->query(fn() => SesiBelajar::where('id_guru_mata_pelajaran', $this->guruMapel->id))
+            ->query(fn() => SesiBelajar::where('id_guru_mata_pelajaran', $this->guruMapel->id))
             ->columns([
                 TextColumn::make('judul')
                     ->label('Sesi Belajar')
@@ -93,15 +96,22 @@ class KelolaMataPelajaran extends Page implements HasTable
             ])
             ->actions([
                 Action::make('kelola')
-                ->label('Kelola Sesi')
-                ->url(fn(SesiBelajar $record) => route('filament.guru.resources.sesi-belajars.edit', ['record' => $record->slug]))
-                ->icon('heroicon-o-arrow-up-right'),
+                    ->label('Kelola Sesi')
+                    ->url(fn(SesiBelajar $record) => route('filament.guru.resources.sesi-belajars.edit', ['record' => $record->slug]))
+                    ->icon('heroicon-o-arrow-up-right'),
                 DeleteAction::make('delete')
             ])
             ->bulkActions([
-               BulkActionGroup::make([
-                   DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
+    protected function getSesiBelajarData(): array
+    {
+        $this->sesiBelajar = SesiBelajar::where('id_guru_mata_pelajaran', $this->guruMapel->id)->get();
+    
+        return $this->sesiBelajar->toArray();
+    }
+
 }

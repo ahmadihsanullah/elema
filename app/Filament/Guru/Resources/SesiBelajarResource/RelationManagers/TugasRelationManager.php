@@ -78,9 +78,9 @@ class TugasRelationManager extends RelationManager
                     ->icon('heroicon-o-eye')
                     ->url(function ($record) {
                         $activeRelationManager = url()->previous();
+                        session(['activeRelationManager' => url()->previous()]); // Simpan di session
                         return route('filament.guru.pages.listPengumpulanTugas.{idTugas}', parameters: [
-                            'idTugas' => $record->id,
-                            'activeRelationManager' => $activeRelationManager,
+                            'idTugas' => $record->id
                         ]);
                     }),
             ])
