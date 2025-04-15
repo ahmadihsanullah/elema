@@ -24,7 +24,7 @@
         Daftar Sesi Belajar
     </x-slot>
 
-    <div class="grid sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4  gap-4">
+    <div class="flex flex-wrap gap-4">
         @foreach ($sesiBelajar as $sesi)
             <x-filament::section  icon="heroicon-o-clipboard-document-list" icon-color="info">
                 <x-slot name="heading">
@@ -47,7 +47,7 @@
                     </x-slot>
                     Apakah yakin ingin menghapus sesi {{ $sesi['judul'] }}?<br>
 
-                    <x-filament::button color="primary" wire:click="deleteSesiBelajar('{{ $sesi['id'] }}')"
+                    <x-filament::button color="danger" wire:click="deleteSesiBelajar('{{ $sesi['id'] }}')"
                         class="mt-6">
                         Ya
                     </x-filament::button>
