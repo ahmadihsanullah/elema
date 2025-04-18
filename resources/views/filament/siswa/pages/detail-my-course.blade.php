@@ -4,14 +4,17 @@
             Kembali
         </x-filament::link>
     </div>
-    @foreach ($sesiBelajars as $sesiBelajar)
-        <x-filament::section>
-            <div class="flex justify-between items-center">
-                <span>{{ $sesiBelajar->judul }}</span>
+            @foreach ($sesiBelajars as $sesiBelajar)
+            <x-filament::section  icon="heroicon-o-clipboard-document-list" icon-color="info">
+                <x-slot name="heading">
+                    {{ $sesiBelajar['judul'] }}
+                </x-slot>
+                {{-- Content --}}
                 <x-filament::button color="primary" wire:click="sesiBelajar('{{ $sesiBelajar['slug'] }}')" class="ml-auto">
                     Lihat Sesi
                 </x-filament::button>
-            </div>
-        </x-filament::section>
-    @endforeach
+               
+            </x-filament::section>
+        @endforeach
+       
 </x-filament-panels::page>

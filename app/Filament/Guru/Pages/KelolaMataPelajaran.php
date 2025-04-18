@@ -33,18 +33,26 @@ class KelolaMataPelajaran extends Page
     public $mataPelajaran;
     public $judul;
     public $sesiBelajar;
+    public $slugGuruMapel;
+    public $kelas;
 
     public function mount($slugGuruMapel)
     {
+        $this->slugGuruMapel = $slugGuruMapel;
         // Ambil mata pelajaran berdasarkan slug
         $this->guruMapel = GuruMataPelajaran::where('slug', $slugGuruMapel)->first();
-
         if (!$this->guruMapel) {
             abort(404);
         }
         $this->mataPelajaran = $this->guruMapel->mataPelajaran->nama;
         $this->sesiBelajar = SesiBelajar::where('id_guru_mata_pelajaran', $this->guruMapel->id)->get()->toArray();
-
+        
+        $this->kelas = $this->guruMapel->jadwalPelajaran->map(function ($item) {
+            return [
+                "id_kelas" => $item->id_kelas,
+                "nama_kelas" => $item->kelas->nama,
+            ];
+        })->unique()->toArray();
     }
 
     public function getFormSchema(): array
@@ -107,6 +115,10 @@ class KelolaMataPelajaran extends Page
         }
     }
 
+    public function rekapNilai($slug, $kelas)
+    {
+        return redirect()->route('filament.guru.pages.list-rekap-nilai.{slug}', ['slug' => $slug, 'kelas'=> $kelas]);
+    }
 
 
 }

@@ -1,45 +1,49 @@
-<!-- filepath: resources/views/filament/siswa/pages/session.blade.php -->
 <x-filament-panels::page>
     <div class="mb-4">
-        <x-filament::link :href="route('filament.siswa.pages.my-courses.{slugMapel}', ['slugMapel' => $slugMapel])" color="info">
+        <x-filament::link :href="route('filament.siswa.pages.my-courses.{slugMapel}', ['slugMapel' => $slugMapel])"
+            color="info">
             Kembali
         </x-filament::link>
     </div>
-    <div class="grid grid-cols-12 gap-6">
-        <!-- Bagian Materi -->
-        <div class="col-span-12">
-            <x-filament::section>
+    <!-- Bagian Materi -->
+    <div>
+        <x-filament::section icon="heroicon-o-book-open" collapsible>
+            <x-slot name="heading">
+                Materi
+            </x-slot>
+            @if ($materi)
                 <x-slot name="heading">
-                    <h2 class="text-xl font-semibold">Materi</h2>
+                    {{ $materi->judul }}
                 </x-slot>
-                @if ($materi)
-                    <x-slot name="heading">
-                        <h1 class="text-2xl font-bold">{{ $materi->judul }}</h1>
-                    </x-slot>
-                    <div class=" dark:tetx-white">
-                        {!! $materi->deskripsi !!}
-                    </div>
-                @else
-                    <p class="text-gray-500 dark:text-gray-400">Materi tidak ditemukan</p>
-                @endif
-            </x-filament::section>
-        </div>
+                <div class="dark:tetx-white">
+                    {!! $materi->deskripsi !!}
+                </div>
+            @else
+                <p class="text-gray-500 dark:text-gray-400">Materi tidak ditemukan</p>
+            @endif
+
+        </x-filament::section>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
         <!-- Bagian File Materi -->
-        <div class="col-span-6">
-            <x-filament::section>
+        <div class="col-span-1 md:col-span-1">
+            <x-filament::section icon="heroicon-o-clipboard-document-list" collapsible collapsed>
                 <x-slot name="heading">
-                    <h2 class="text-xl font-semibold">File Materi</h2>
+                    File Materi
                 </x-slot>
-                @if ($fileMateri)
+                <x-slot name="headerEnd">
+                    <x-filament::badge color="primary">
+                        {{ $fileMateri->count() }}
+                    </x-filament::badge>
+                </x-slot>
+                @if ($fileMateri != null && $fileMateri->count() > 0)
                     @foreach ($fileMateri as $file)
-                        <div class="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
-                            <button class="font-medium flex items-center space-x-2"
-                                wire:click="downloadFile('{{ $file->file }}')">
-                                <x-heroicon-o-document class="mx-3 w-5 h-5 text-gray-500 dark:text-gray-400" />
-                                <span class="text-gray-900 dark:text-gray-100">{{ $file->nama }}</span>
+                        <x-filament::badge icon="heroicon-o-document" class="mb-2" color="gray">
+                            <button wire:click="downloadFile('{{ $file->file }}')">{{ $file->nama }}
                             </button>
-                        </div>
+                        </x-filament::badge>
                     @endforeach
                 @else
                     <p class="text-gray-500 dark:text-gray-400">Tidak ada file materi untuk sesi ini.</p>
@@ -48,35 +52,24 @@
         </div>
 
         <!-- Tabel Tugas -->
-        <div class="col-span-12">
-            <x-filament::section>
+        <div class="col-span-1 md:col-span-1">
+            <x-filament::section icon="heroicon-o-document-check" collapsible collapsed>
                 <x-slot name="heading">
-                    <h2 class="text-xl font-semibold">Daftar Tugas</h2>
+                    Daftar Tugas
                 </x-slot>
-
+                <x-slot name="headerEnd">
+                    <x-filament::badge color="primary">
+                        {{ $tugas->count() }}
+                    </x-filament::badge>
+                </x-slot>
                 @if ($tugas->count() > 0)
-                    <table class="table-auto w-full border-collapse">
-                        <thead>
-                            <tr class="border">
-                                <th class="border px-4 py-2">Judul Tugas</th>
-                                <th class="border px-4 py-2">Pengumpulan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($tugas as $t)
-                                <tr>
-                                    <td class="border px-4 py-2 text-gray-900 dark:text-gray-100">{{ $t->judul }}
-                                    </td>
-                                    <td class="border px-4 py-2">
-                                        <button wire:click="kumpulkanTugas('{{ $t->id }}')"
-                                            class="text-blue-500 dark:text-blue-400">
-                                            Kumpulkan Tugas
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    @foreach ($tugas as $t)
+                        <div class="flex mb-2 items-center">
+                            <p class="mr-2">{{ $t->judul }}</p>
+                            <x-filament::icon-button wire:click="kumpulkanTugas('{{ $t->id }}')"
+                                icon="heroicon-m-arrow-up-right" color="info" label="Kumpulkan" />
+                        </div>
+                    @endforeach
                 @else
                     <p class="text-gray-500 dark:text-gray-400">Belum ada tugas yang di-upload.</p>
                 @endif
@@ -84,17 +77,22 @@
         </div>
 
         <!-- Bagian Kuis -->
-        <div class="col-span-6">
-            <x-filament::section>
+        <div class="col-span-1 md:col-span-1">
+            <x-filament::section collapsible collapsed icon="heroicon-o-puzzle-piece">
                 <x-slot name="heading">
-                    <h2 class="text-xl font-semibold mb-4">Kuis</h2>
+                    Kuis
+                </x-slot>
+                <x-slot name="headerEnd">
+                    <x-filament::badge color="primary">
+                        {{ $kuis->count() }}
+                    </x-filament::badge>
                 </x-slot>
 
                 @if ($kuis->count() > 0)
                     @foreach ($kuis as $k)
-                        <x-filament::section class="mb-4">
+                        <x-filament::section class="mb-4" collapsible collapsed>
                             <x-slot name="heading">
-                                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $k->judul }}</h1>
+                                {{ $k->judul }}
                             </x-slot>
                             <div class="prose max-w-none dark:prose-dark">
                                 <p class="text-gray-900 dark:text-white">Deskripsi: {{ $k->deskripsi }}</p>
@@ -156,5 +154,7 @@
                 @endif
             </x-filament::section>
         </div>
+
+
     </div>
 </x-filament-panels::page>

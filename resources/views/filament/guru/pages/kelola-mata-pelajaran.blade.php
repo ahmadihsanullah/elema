@@ -1,6 +1,19 @@
 <x-filament-panels::page>
-    <x-filament::section>
-        <h2>{{ $mataPelajaran }}</h2>
+    <x-filament::section
+    collapsible
+    >
+        <x-slot name="heading">
+            {{ $mataPelajaran }}
+        </x-slot>
+
+            @foreach ($kelas as $k)
+                <div class="mb-2">
+                    <x-filament::link wire:click="rekapNilai('{{ $slugGuruMapel }}', '{{ $k['id_kelas'] }}')"
+                        tag="button" icon="heroicon-m-inbox-arrow-down">
+                        {{ $k['nama_kelas'] }}
+                    </x-filament::link>
+                </div>
+            @endforeach
     </x-filament::section>
 
     <x-filament::modal id="tambah-sesi-modal">
@@ -26,7 +39,7 @@
 
     <div class="flex flex-wrap gap-4">
         @foreach ($sesiBelajar as $sesi)
-            <x-filament::section  icon="heroicon-o-clipboard-document-list" icon-color="info">
+            <x-filament::section icon="heroicon-o-clipboard-document-list" icon-color="info">
                 <x-slot name="heading">
                     {{ $sesi['judul'] }}
                 </x-slot>

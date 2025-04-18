@@ -50,8 +50,8 @@ class MataPelajaranStatsOverview extends BaseWidget
                 $kelasString = implode(', ', $kelasNames);
 
                 return Stat::make(
-                    $mataPelajaran->nama,
-                    $jadwals->count() . ' Jadwal'
+                    $jadwals->count() . ' Jadwal',
+                    $mataPelajaran->nama
                 )
                     ->description('Kelas: ' . $kelasString)
                     ->icon('heroicon-o-book-open')
