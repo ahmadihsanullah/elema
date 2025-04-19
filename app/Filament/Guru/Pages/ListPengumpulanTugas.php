@@ -77,8 +77,8 @@ class ListPengumpulanTugas extends Page implements HasTable
                         return 'heroicon-m-check-badge';
                     }
                 })
-                ->trueColor('primary')
-                ->falseColor('warning'),
+                ->trueColor('danger')
+                ->falseColor('primary'),
                 IconColumn::make('edit_nilai')
                     ->getStateUsing(fn() => true) // the column requires a state to be passed to it
                     ->icon(fn(bool $state): string => 'heroicon-m-pencil-square') // always show the 'edit' icon

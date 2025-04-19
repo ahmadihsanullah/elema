@@ -4,6 +4,7 @@ namespace App\Filament\Guru\Pages;
 
 use App\Models\HasilKuis;
 use App\Models\Kuis;
+use Filament\Actions\EditAction;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Contracts\HasTable;
@@ -51,10 +52,18 @@ class ViewQuizResult extends Page implements HasTable
                     ->label('Kelas'),
                 TextColumn::make('skor')
                     ->label('Nilai')
+                    ->badge(),
+                TextColumn::make('status')
                     ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'completed' => 'success',
+                        'in_progress' => 'warning',
+                        'expired' => 'danger',
+                    })
+                
             ])
             ->actions([
-                DeleteAction::make(),
+                DeleteAction::make()
             ])
             ->filters([
                 // Filter untuk mencari siswa berdasarkan nama

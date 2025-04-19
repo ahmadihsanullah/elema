@@ -89,7 +89,7 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
                                         }),
                         ])->icon('heroicon-o-document');
                 })->toArray()
-            )->skippable()
+            )
                 ->nextAction(function (Action $action) {
                     $action->label('Next')
                         ->action(function () {

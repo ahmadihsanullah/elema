@@ -2,7 +2,7 @@
 
 return [
 
-    'title' => 'Home',
+    'title' => 'Halaman Utama',
 
     'actions' => [
 

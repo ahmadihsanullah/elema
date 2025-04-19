@@ -15,15 +15,22 @@
                     <td>:</td>
                     <td>{{ $tugas->judul }}</td>
                 </tr>
+                @if ($tugas->deskripsi != null)
+                    <tr>
+                        <td>Deskripsi</td>
+                        <td>:</td>
+                        <td>{!! $tugas->deskripsi !!}</td>
+                    </tr>
+                @endif
                 <tr>
-                    <td>Deskripsi</td>
+                    <td>Deadline</td>
                     <td>:</td>
-                    <td>{!! $tugas->deskripsi !!}</td>
-                </tr>
-                <tr>
-                    <td>Deadline Pengumpulan</td>
-                    <td>:</td>
-                    <td>{{ $tugas->deadline }}</td>
+                    <td>
+                        <x-filament::badge>
+                            {{ $tugas->deadline }}
+                        </x-filament::badge>
+
+                    </td>
                 </tr>
             </table>
         </x-filament::section>
@@ -66,13 +73,8 @@
                                 Tidak, batalkan
                             </x-filament::button>
                         </x-filament::modal>
-
-
-
                     </div>
-
                 </x-slot>
-
                 <table>
                     @php
                         $deadline = \Carbon\Carbon::parse($tugas->deadline);
@@ -87,17 +89,23 @@
                         <td>
                             @if ($isLate)
                                 <span class="text-red-500 font-bold">
-                                    Terlambat
+                                    <x-filament::badge color="danger">
+                                        Terlambat
+                                    </x-filament::badge>
                                 </span>
                             @else
-                                Tepat Waktu
+                                <x-filament::badge color="success">
+                                    Tepat Waktu
+                                </x-filament::badge>
                             @endif
                         </td>
                     </tr>
                     <tr>
                         <td>Waktu Pengumpulan </td>
                         <td> : </td>
-                        <td>{{ $this->pengumpulanTugas->created_at->diffForHumans() }}</td>
+                        <td>{{ $createdAt->translatedFormat('l, d F Y H:i:s') }}</td>
+                    </tr>
+                    </td>
                     </tr>
                     <tr>
                         <td>Sisa Waktu </td>
@@ -144,19 +152,19 @@
                             @endif
                         </td>
                         <td colspan="2" class="border px-4 py-2">
-                          <span class="font-bold">
-                            {{ $this->pengumpulanTugas->nilai }}
-                        </span>
+                            <span class="font-bold">
+                                {{ $this->pengumpulanTugas->nilai }}
+                            </span>
                         </td>
                     </tr>
                 </table>
             </x-filament::section>
         @endif
-        @else
+    @else
         @php
             return redirect()->route('filament.siswa.pages.my-courses.session.{slug}', [
-            'slug' => $this->slugSession,
-        ]);
+                'slug' => $this->slugSession,
+            ]);
         @endphp
     @endif
 

@@ -33,14 +33,9 @@
                 <x-slot name="heading">
                     File Materi
                 </x-slot>
-                <x-slot name="headerEnd">
-                    <x-filament::badge color="primary">
-                        {{ $fileMateri->count() }}
-                    </x-filament::badge>
-                </x-slot>
                 @if ($fileMateri != null && $fileMateri->count() > 0)
                     @foreach ($fileMateri as $file)
-                        <x-filament::badge icon="heroicon-o-document" class="mb-2" color="gray">
+                        <x-filament::badge icon="heroicon-o-document" class="mb-2" size="lg" color="gray">
                             <button wire:click="downloadFile('{{ $file->file }}')">{{ $file->nama }}
                             </button>
                         </x-filament::badge>
@@ -56,11 +51,6 @@
             <x-filament::section icon="heroicon-o-document-check" collapsible collapsed>
                 <x-slot name="heading">
                     Daftar Tugas
-                </x-slot>
-                <x-slot name="headerEnd">
-                    <x-filament::badge color="primary">
-                        {{ $tugas->count() }}
-                    </x-filament::badge>
                 </x-slot>
                 @if ($tugas->count() > 0)
                     @foreach ($tugas as $t)
@@ -81,11 +71,6 @@
             <x-filament::section collapsible collapsed icon="heroicon-o-puzzle-piece">
                 <x-slot name="heading">
                     Kuis
-                </x-slot>
-                <x-slot name="headerEnd">
-                    <x-filament::badge color="primary">
-                        {{ $kuis->count() }}
-                    </x-filament::badge>
                 </x-slot>
 
                 @if ($kuis->count() > 0)

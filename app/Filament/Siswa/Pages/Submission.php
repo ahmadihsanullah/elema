@@ -16,6 +16,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -112,6 +113,8 @@ class Submission extends Page
         $pengumpulanTugas = PengumpulanTugas::create([
             'id_tugas' => $this->tugas->id,
             'id_siswa' => $this->siswa->id,
+            'created_at' => Carbon::now('Asia/Jakarta'),
+            'updated_at' => Carbon::now('Asia/Jakarta')
         ]);
 
         // Simpan data ke database untuk setiap file yang di-upload

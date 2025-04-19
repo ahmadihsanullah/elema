@@ -58,7 +58,7 @@ class SiswaPanelProvider extends PanelProvider
             ->login()
             ->authGuard('student')
             ->profile()
-            ->sidebarCollapsibleOnDesktop()
+            ->topNavigation()
             ->colors([
                 'primary' => Color::Blue,
             ])

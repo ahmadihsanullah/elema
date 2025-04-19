@@ -115,10 +115,4 @@ class KelolaMataPelajaran extends Page
         }
     }
 
-    public function rekapNilai($slug, $kelas)
-    {
-        return redirect()->route('filament.guru.pages.list-rekap-nilai.{slug}', ['slug' => $slug, 'kelas'=> $kelas]);
-    }
-
-
 }

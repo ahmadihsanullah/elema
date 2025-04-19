@@ -55,7 +55,7 @@ class GuruPanelProvider extends PanelProvider
             ])
             ->login()
             ->authGuard('teacher')
-            ->sidebarCollapsibleOnDesktop()
+            ->topNavigation()
             ->colors([
                 'primary' => Color::Blue,
             ])

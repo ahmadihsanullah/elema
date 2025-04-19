@@ -12,6 +12,8 @@ use Illuminate\Support\HtmlString;
 
 class StatsOverview extends BaseWidget
 {
+
+
     protected function getStats(): array
     {
         $siswa = Auth::guard('student')->user();
