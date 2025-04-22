@@ -40,8 +40,7 @@ class KuisRelationManager extends RelationManager
                 ->recordSelectOptionsQuery(fn (Builder $query) => $query->where('id_guru', Auth::id())),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make()
-                    ,
+                Tables\Actions\DetachAction::make(),
                 Tables\Actions\ViewAction::make("lihat")
                     ->icon('heroicon-o-eye')
                     ->url(fn (Kuis $record) =>

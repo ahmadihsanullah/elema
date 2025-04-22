@@ -20,7 +20,7 @@ class GuruResource extends Resource
     protected static ?string $model = Guru::class;
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationLabel = 'Guru';
-    protected static ?string $navigationGroup = 'Master Data';
+    protected static ?string $navigationGroup = 'Pengguna';
     protected static ?int $navigationSort = 2;
     public static function form(Form $form): Form
     {

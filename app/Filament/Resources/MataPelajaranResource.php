@@ -20,11 +20,11 @@ class MataPelajaranResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Master Data';
+    protected static ?string $navigationGroup = 'Akademi';
     
     protected static ?string $navigationLabel = 'Mata Pelajaran';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     public static function getModelLabel(): string
     {

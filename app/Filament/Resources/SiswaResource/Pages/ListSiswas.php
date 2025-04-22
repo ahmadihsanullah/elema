@@ -4,9 +4,16 @@ namespace App\Filament\Resources\SiswaResource\Pages;
 
 use App\Filament\Imports\SiswaImporter;
 use App\Filament\Resources\SiswaResource;
+use App\Imports\SiswasImport;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Actions\ImportAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ListSiswas extends ListRecords
 {
@@ -16,8 +23,25 @@ class ListSiswas extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
-            ImportAction::make()
-            ->importer(SiswaImporter::class),
+            Action::make('impor siswa')
+                ->label('Impor Siswa')
+                ->color('warning')
+                ->icon('heroicon-o-document-arrow-down')
+                ->form([
+                    FileUpload::make('attachment')
+                ])
+                ->action(function (array $data) {
+                    $file = public_path('storage/' . $data['attachment']);
+                    Excel::import(new SiswasImport, $file);
+                    Notification::make()
+                        ->title('Sukses')
+                        ->body('Data siswa berhasil diimpor')
+                        ->success()
+                        ->send();
+                    // Hapus file setelah diimpor
+                    Storage::disk('public')->delete($data['attachment']);
+                })
+                ,
         ];
     }
 }

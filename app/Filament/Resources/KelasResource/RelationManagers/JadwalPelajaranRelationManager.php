@@ -20,8 +20,10 @@ class JadwalPelajaranRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('id_tahun_pelajaran')
                     ->label('Tahun Pelajaran')
+                    ->default(TahunPelajaran::where('aktif', true)->first()?->id)
                     ->options(TahunPelajaran::where('aktif', true)->pluck('nama', 'id'))
-                    ->required(),
+                    ->required()
+                    ,
 
                 Forms\Components\Select::make('id_guru_mata_pelajaran')
                     ->label('Guru Mata Pelajaran')

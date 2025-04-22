@@ -2,20 +2,16 @@
 
 namespace App\Filament\Resources\KelasResource\RelationManagers;
 
-use App\Filament\Resources\SiswaResource;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SiswasRelationManager extends RelationManager
 {
     protected static string $relationship = 'siswas';
-
-    protected static ?string $recordTitleAttribute = 'name';
 
     public function form(Form $form): Form
     {
@@ -57,24 +53,24 @@ class SiswasRelationManager extends RelationManager
                     ]),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('jenis_kelamin')
-                    ->options([
-                        'l' => 'Laki-laki',
-                        'p' => 'Perempuan',
-                    ]),
+                //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
+                Tables\Actions\AssociateAction::make()
+                ->recordSelectOptionsQuery(fn (Builder $query) => 
+                $query->where('id_kelas', null))
+                ->preloadRecordSelect()
+                
             ])
             ->actions([
-                Tables\Actions\Action::make('view_siswa')
-                    ->label('Edit')
-                    ->icon('heroicon-m-pencil-square')
-                    ->action(fn($record) => $this->redirect(route('filament.admin.resources.siswas.edit', $record))),
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DissociateAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DissociateBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);

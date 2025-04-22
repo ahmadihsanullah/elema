@@ -27,9 +27,9 @@ class GuruMataPelajaran extends Page implements HasTable
 
     protected static string $view = 'filament.pages.guru-mata-pelajaran';
 
-    protected static ?string $navigationGroup = 'Master Data';
+    protected static ?string $navigationGroup = 'Akademi';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 6;
 
     public $guru = null;
     public $mataPelajaran = [];

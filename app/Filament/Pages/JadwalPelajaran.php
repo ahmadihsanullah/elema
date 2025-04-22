@@ -27,8 +27,10 @@ class JadwalPelajaran extends Page implements HasTable
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationLabel = 'Jadwal Pelajaran';
     protected static ?string $title = 'Manajemen Jadwal Pelajaran';
-    protected static ?string $navigationGroup = 'Master Data';
+    protected static ?string $navigationGroup = 'Akademi';
     protected static string $view = 'filament.pages.jadwal-pelajaran';
+    protected static ?int $navigationSort = 7;
+
     public $kelas = null;
     public $tahunPelajaran = null;
     public $hari = null;

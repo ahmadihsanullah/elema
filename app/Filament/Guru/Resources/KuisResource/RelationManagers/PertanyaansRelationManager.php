@@ -12,9 +12,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -54,7 +52,6 @@ class PertanyaansRelationManager extends RelationManager
                         if (isset($data['file'])) {
                             try {
                                 $filePath = Storage::disk('public')->path($data['file']);
-
                                 // Dapatkan id kuis dari URL atau dari record yang sedang di-edit
                                 $kuisId = $this->getOwnerRecord()->id; // Mengambil dari Filament record
                                 // Import file menggunakan path dan id kuis dari record

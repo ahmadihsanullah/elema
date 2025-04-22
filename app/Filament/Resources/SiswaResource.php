@@ -21,8 +21,8 @@ class SiswaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationGroup = 'Master Data';
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Pengguna';
+    protected static ?int $navigationSort = 1;
     
     protected static ?string $navigationLabel = 'Siswa';
 
@@ -62,7 +62,6 @@ class SiswaResource extends Resource
                     ])
                     ->required(),
                 Forms\Components\Select::make('id_kelas')
-                    ->required()
                     ->relationship('kelas', 'id')
                     ->getOptionLabelFromRecordUsing(function (Model $record) {
                         return $record->kode;
@@ -77,31 +76,14 @@ class SiswaResource extends Resource
             ->columns([
 
                 Tables\Columns\TextColumn::make('index')
+                    ->label('No')
                     ->rowIndex(),
                 Tables\Columns\TextColumn::make('nis')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\BadgeColumn::make('jenis_kelamin')
-                    ->formatStateUsing(fn($state) => $state === 'l' ? 'Laki-Laki' : 'Perempuan')
-                    ->colors([
-                        'primary' => fn($state) => $state === 'l',
-                        'success' => fn($state) => $state === 'p',
-                    ]),
-                Tables\Columns\TextColumn::make('kelas.nama')
-                    ->sortable(),
-                Tables\Columns\BadgeColumn::make('kelas.jurusan.nama')
-                    ->sortable()
-                    ->colors([
-                        'primary' => fn($state) => $state === 'Akuntansi',
-                        'success' => fn($state) => $state === 'Teknik Komputer Jaringan',
-                        'warning' => fn($state) => $state === 'Teknik Audio Visual',
-                        'danger' => fn($state) => $state === 'Administrasi Perkantoran',
-                    ]),
-                Tables\Columns\TextColumn::make('kelas.angkatan.tahun')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('kelas.nama'),
+                Tables\Columns\TextColumn::make('kelas.angkatan.tahun'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('jurusan')
