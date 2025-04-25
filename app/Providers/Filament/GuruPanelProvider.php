@@ -59,7 +59,7 @@ class GuruPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Blue,
             ])
-            ->brandLogo(asset('images/logo1.png'))
+            ->brandLogo(asset('images/image.png'))
             ->renderHook(
                 // This line tells us where to render it
                 'panels::body.end',
@@ -70,7 +70,7 @@ class GuruPanelProvider extends PanelProvider
                 FilamentBackgroundsPlugin::make()
                     ->imageProvider(
                         MyImages::make()
-                            ->directory('images/logo')
+                        ->directory('images/swisnl/filament-backgrounds/triangles')
                     ),
             ]);
     }

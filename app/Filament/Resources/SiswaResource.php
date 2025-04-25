@@ -63,9 +63,11 @@ class SiswaResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('id_kelas')
                     ->relationship('kelas', 'id')
+                    ->default(null)
                     ->getOptionLabelFromRecordUsing(function (Model $record) {
                         return $record->kode;
-                    }),
+                    })
+                    ,
                 ])->columns(2)
             ]);
     }

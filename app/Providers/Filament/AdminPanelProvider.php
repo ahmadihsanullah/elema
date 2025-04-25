@@ -68,7 +68,7 @@ class AdminPanelProvider extends PanelProvider
                     ),
             ])
             ->brandName('E-Learning MB')
-            ->brandLogo(asset('images/logo1.png'))
+            ->brandLogo(asset('images/image.png'))
             ->renderHook(
                 // This line tells us where to render it
                 'panels::body.end',

@@ -7,6 +7,7 @@ use App\Models\Kuis;
 use Filament\Actions\EditAction;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -53,14 +54,20 @@ class ViewQuizResult extends Page implements HasTable
                 TextColumn::make('skor')
                     ->label('Nilai')
                     ->badge(),
-                TextColumn::make('status')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'completed' => 'success',
-                        'in_progress' => 'warning',
-                        'expired' => 'danger',
+                IconColumn::make('status')
+                    ->label('Lulus KKM')
+                    ->getStateUsing(function (HasilKuis $record){
+                        return $record->skor <  $this->kuis->nilai_minimal;
+                    }) // the column requires a state to be passed to it
+                    ->icon(function(bool $state): string {
+                        if($state){
+                            return 'heroicon-m-x-circle';
+                        }else{
+                            return 'heroicon-m-check-badge';
+                        }
                     })
-                
+                    ->trueColor('danger')
+                    ->falseColor('primary'),
             ])
             ->actions([
                 DeleteAction::make()

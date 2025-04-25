@@ -12,6 +12,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -28,7 +29,9 @@ class ListSiswas extends ListRecords
                 ->color('warning')
                 ->icon('heroicon-o-document-arrow-down')
                 ->form([
+                    // Tombol untuk mendownload template
                     FileUpload::make('attachment')
+                    ->label(new HtmlString('<a href="' . route('template-siswa') . '" target="_blank" type="button" style="background-color: orange; color: white; padding: 2px;">Download Format Guru</a>'))
                 ])
                 ->action(function (array $data) {
                     $file = public_path('storage/' . $data['attachment']);

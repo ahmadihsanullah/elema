@@ -74,7 +74,7 @@ class SiswaPanelProvider extends PanelProvider
                 FilamentBackgroundsPlugin::make()
                     ->imageProvider(
                         MyImages::make()
-                            ->directory('images/logo')
+                        ->directory('images/swisnl/filament-backgrounds/triangles')
                     ),
             ]);
     }

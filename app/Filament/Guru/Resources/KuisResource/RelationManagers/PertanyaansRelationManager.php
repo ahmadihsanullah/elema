@@ -14,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PertanyaansRelationManager extends RelationManager
@@ -47,7 +48,9 @@ class PertanyaansRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
                 // Tambahkan custom action untuk import
                 Tables\Actions\Action::make('importSoal')
-                    ->label('Import Soal')
+                    ->label('Import Soal', )
+                    ->color('warning')
+                    ->icon('heroicon-o-document-arrow-down')
                     ->action(function (array $data) {
                         if (isset($data['file'])) {
                             try {
@@ -62,12 +65,14 @@ class PertanyaansRelationManager extends RelationManager
                                     ->success()
                                     ->send();
                             } catch (\Exception $e) {
+                                Storage::disk('public')->delete($data['file']);
                                 Notification::make()
-                                    ->title('Gagal upload' . $e->getMessage())
+                                    ->title('Gagal upload')
                                     ->danger()
                                     ->send();
                             }
                         } else {
+                            Storage::disk('public')->delete($data['file']);
                             Notification::make()
                                 ->title('Gagal upload file tidak terbaca')
                                 ->danger()
@@ -78,8 +83,7 @@ class PertanyaansRelationManager extends RelationManager
                         FileUpload::make('file')
                             ->disk('public')
                             ->visibility('public')
-                            ->directory('importsoal')
-                            ->label('Import Soal')
+                            ->label(new HtmlString('<a href="' . route('template-soal') . '" target="_blank" type="button" style="background-color: orange; color: white; padding: 2px; border-radius: 5%;">Download Format Soal</a>'))
                             ->acceptedFileTypes(['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
                             ->required(),
                     ])

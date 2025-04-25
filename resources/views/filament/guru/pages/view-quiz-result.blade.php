@@ -5,10 +5,11 @@
             Kembali
         </x-filament::link>
     </div>
-    <x-filament::card>
-        <p class="text-xl text-black-700 mb-4">Daftar Siswa yang menyelesaikan kuis:  {{ $kuis->judul }}</p>
-        <div class="overflow-x-auto">
-            {{$this->table}}
-        </div>
-    </x-filament::card>
+    <x-filament::section collapsible>
+        <x-slot name="heading">
+            Daftar Siswa yang menyelesaikan kuis: {{ $kuis->judul }}
+        </x-slot>
+
+        {{ $this->table }}
+    </x-filament::section>
 </x-filament::page>

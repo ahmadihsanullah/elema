@@ -1,10 +1,11 @@
 <x-filament-panels::page>
     <div class="mb-4">
-        <x-filament::link :href="route('filament.siswa.pages.my-courses.{slugMapel}', ['slugMapel' => $slugMapel])"
-            color="info">
+        <x-filament::link :href="route('filament.siswa.pages.my-courses.{slugMapel}', ['slugMapel' => $slugMapel])" color="info" icon="heroicon-o-arrow-left" icon-position="before"
+            size="lg" class="inline-flex items-center">
             Kembali
         </x-filament::link>
     </div>
+    
     <!-- Bagian Materi -->
     <div>
         <x-filament::section icon="heroicon-o-book-open" collapsible>
@@ -83,12 +84,13 @@
                                 <p class="text-gray-900 dark:text-white">Deskripsi: {{ $k->deskripsi }}</p>
                                 <p class="text-gray-900 dark:text-white">Intruksi Kuis</p>
                                 <p class="text-gray-900 dark:text-white">Durasi: {{ $k->durasi }} menit</p>
+                                <p class="text-gray-900 dark:text-white">Nilai Minimal: {{ $k->nilai_minimal }}</p>
                                 <p class="text-gray-900 dark:text-white">Jumlah Soal: {{ $k->pertanyaans()->count() }}
                                     soal</p>
-                                <p class="text-gray-900 dark:text-white">Petunjuk: Pastikan Anda mengerjakan semua soal
-                                    dengan seksama. Waktu akan dimulai setelah Anda memulai kuis ini.</p>
                                 <p class="text-gray-900 dark:text-white">Waktu Mulai: {{ $k->waktu_mulai }}</p>
                                 <p class="text-gray-900 dark:text-white">Waktu Selesai: {{ $k->waktu_selesai }}</p>
+                                <p class="text-gray-900 dark:text-white">Petunjuk: Pastikan Anda mengerjakan semua soal
+                                    dengan seksama. Waktu akan dimulai setelah Anda memulai kuis ini.</p>
                             </div>
                             <!-- Tombol untuk memulai kuis atau melihat hasil -->
                             @php

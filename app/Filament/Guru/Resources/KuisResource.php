@@ -81,14 +81,6 @@ class KuisResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('durasi')
                     ->label("durasi (menit)"),
-                Tables\Columns\TextColumn::make('waktu_mulai')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('waktu_selesai')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('acak_soal')
-                    ->boolean(),
                 Tables\Columns\TextColumn::make('nilai_minimal'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

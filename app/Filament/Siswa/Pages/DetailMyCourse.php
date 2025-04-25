@@ -13,6 +13,7 @@ class DetailMyCourse extends Page
 
     protected static string $view = 'filament.siswa.pages.detail-my-course';
     protected static ?string $slug = 'my-courses/{slugMapel}'; // Custom URL slug
+    protected static ?string $title = 'daftar sesi';
 
     public $guruMapel;
     public $mataPelajaran;
