@@ -63,7 +63,7 @@ class SiswaPanelProvider extends PanelProvider
                 'primary' => Color::Blue,
             ])
             ->profile()
-            ->brandLogo(asset('images/logo1.png'))
+            ->brandLogo(asset('images/image.png'))
             ->renderHook(
                 // This line tells us where to render it
                 'panels::body.end',
@@ -76,6 +76,6 @@ class SiswaPanelProvider extends PanelProvider
                         MyImages::make()
                         ->directory('images/swisnl/filament-backgrounds/triangles')
                     ),
-            ]);
+                ]);
     }
 }
