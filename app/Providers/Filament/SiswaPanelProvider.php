@@ -55,7 +55,6 @@ class SiswaPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->login()
             ->authGuard('student')
             ->profile()
             ->topNavigation()
@@ -69,13 +68,6 @@ class SiswaPanelProvider extends PanelProvider
                 'panels::body.end',
                 // This is the view that will be rendered
                 fn () => view('filament.footer.footer'),
-            )
-            ->plugins([
-                FilamentBackgroundsPlugin::make()
-                    ->imageProvider(
-                        MyImages::make()
-                        ->directory('images/swisnl/filament-backgrounds/triangles')
-                    ),
-                ]);
+            );
     }
 }

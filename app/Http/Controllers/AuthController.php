@@ -13,29 +13,42 @@ class AuthController extends Controller
         return view('login');
     }
 
-    public function login(Request $request)
+    // Login Siswa
+    public function loginSiswa(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-        {{
-            var_dump($credentials);
-        }}
-        if (Auth::guard('students')->attempt($credentials)) {
+
+        // Cek menggunakan guard 'student'
+        if (Auth::guard('student')->attempt($credentials, false)) {
+            // Regenerate session setelah berhasil login
             $request->session()->regenerate();
-            {{
-                dd("halo");
-            }}
-            if (Auth::guard('siswa')->attempt($credentials)) {
-                $request->session()->regenerate();
-                return redirect()->intended('/siswa');
-            }
+            return redirect()->route('filament.siswa.pages.dashboard'); // Arahkan ke dashboard siswa
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ]);
+        // Menyimpan error ke session
+        session()->flash('error', 'Login gagal. Periksa email atau password Anda.');
+
+        // Redirect ke halaman login siswa
+        return redirect()->route('login');
     }
+
+    // Login Guru
+    public function loginGuru(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        // Cek menggunakan guard 'teacher'
+        if (Auth::guard('teacher')->attempt($credentials)) {
+            // Regenerate session setelah berhasil login
+            $request->session()->regenerate();
+            return redirect()->route('filament.guru.pages.dashboard'); // Arahkan ke dashboard guru
+        }
+
+        // Menyimpan error ke session
+        session()->flash('error', 'Login gagal. Periksa email atau password Anda.');
+
+        // Redirect ke halaman login siswa
+        return redirect()->route('login');
+    }
+
 }

@@ -60,13 +60,6 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Blue,
             ])
-            ->plugins([
-                FilamentBackgroundsPlugin::make()
-                    ->imageProvider(
-                        MyImages::make()
-                            ->directory('images/swisnl/filament-backgrounds/triangles')
-                    ),
-            ])
             ->brandName('E-Learning MB')
             ->brandLogo(asset('images/image.png'))
             ->renderHook(

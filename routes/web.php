@@ -23,3 +23,6 @@ Route::get('/template-soal', function () {
 
     return Response::download($filePath);
 })->name('template-soal');
+
+Route::post('/login/siswa', [AuthController::class, 'loginSiswa'])->name('login.siswa');
+Route::post('/login/guru', [AuthController::class, 'loginGuru'])->name('login.guru');
