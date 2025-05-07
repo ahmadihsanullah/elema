@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('pertanyaans', function (Blueprint $table) {
             $table->dropColumn('penjelasan');
-            $table->dropColumn('aktif');
         });
     }
 
@@ -24,7 +23,6 @@ return new class extends Migration
     {
         Schema::table('pertanyaans', function (Blueprint $table) {
             $table->text('penjelasan')->nullable(true);
-            $table->boolean('aktif')->default(true);
         });
     }
 };
