@@ -23,7 +23,7 @@ class KelasResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-home';
 
     protected static ?string $navigationGroup = 'Akademi';
-    
+
     protected static ?string $navigationLabel = 'Kelas';
     protected static ?int $navigationSort = 5;
 
@@ -31,7 +31,7 @@ class KelasResource extends Resource
     {
         return 'Kelas';
     }
-    
+
     public static function getPluralModelLabel(): string
     {
         return 'Kelas';
@@ -43,18 +43,33 @@ class KelasResource extends Resource
             ->schema([
                 Card::make()->schema([
                     Forms\Components\TextInput::make('kode')
-                    ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                Forms\Components\TextInput::make('nama')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('id_jurusan')
-                    ->required()
-                    ->relationship('jurusan', 'nama'),
-                Forms\Components\Select::make('id_angkatan')
-                    ->required()
-                    ->relationship('angkatan', 'tahun'),
+                        ->required()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true),
+                    Forms\Components\TextInput::make('nama')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\Select::make('id_jurusan')
+                        ->required()
+                        ->relationship('jurusan', 'nama')
+                        ->createOptionForm([
+                            Forms\Components\TextInput::make('nama')
+                                ->required()
+                                ->maxLength(255)
+                                ->unique(ignoreRecord: true),
+                            Forms\Components\TextInput::make('kode')
+                                ->required()
+                                ->maxLength(255)
+                                ->unique(ignoreRecord: true),
+                        ]),
+                    Forms\Components\Select::make('id_angkatan')
+                        ->required()
+                        ->relationship('angkatan', 'tahun')
+                        ->createOptionForm([
+                            Forms\Components\TextInput::make('tahun')
+                            ->required()
+                            ->unique(ignoreRecord: true),
+                        ]),
                 ])->columns(2)
             ]);
     }
