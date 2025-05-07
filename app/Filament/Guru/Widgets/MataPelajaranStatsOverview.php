@@ -9,6 +9,7 @@ use Filament\Notifications\Notification;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class MataPelajaranStatsOverview extends BaseWidget
 {
@@ -24,22 +25,26 @@ class MataPelajaranStatsOverview extends BaseWidget
                 throw new \Exception("Tahun pelajaran aktif tidak ditemukan!");
             }
 
-            // Ambil data jadwal pelajaran untuk guru
-            $jadwalByMataPelajaran = JadwalPelajaran::where('id_tahun_pelajaran', $tahunPelajaranAktif->id)
-                ->whereHas('guruMataPelajaran', function ($query) use ($guru) {
-                    $query->where('id_guru', $guru->id);
-                })
-                ->with([
-                    'guruMataPelajaran' => function ($query) {
-                        $query->select('id', 'id_guru', 'id_mata_pelajaran', 'slug')
-                            ->with([
-                                'mataPelajaran:id,nama',
-                            ]);
-                    },
-                    'kelas:id,nama'
-                ])
-                ->get()
-                ->groupBy('guruMataPelajaran.mataPelajaran.id');
+            // Cek apakah data sudah ada di cache
+            $cacheKey = 'jadwal_mapel_guru_' . $guru->id . '_tahun_' . $tahunPelajaranAktif->id;
+            $jadwalByMataPelajaran = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($guru, $tahunPelajaranAktif) {
+                return JadwalPelajaran::where('id_tahun_pelajaran', $tahunPelajaranAktif->id)
+                    ->whereHas('guruMataPelajaran', function ($query) use ($guru) {
+                        $query->where('id_guru', $guru->id);
+                    })
+                    ->with([
+                        'guruMataPelajaran' => function ($query) {
+                            $query->select('id', 'id_guru', 'id_mata_pelajaran', 'slug')
+                                ->with([
+                                    'mataPelajaran:id,nama',
+                                ]);
+                        },
+                        'kelas:id,nama'
+                    ])
+                    ->get()
+                    ->groupBy('guruMataPelajaran.mataPelajaran.id');
+            });
+
             // Buat array stats
             $stats = $jadwalByMataPelajaran->map(function ($jadwals) {
                 $mataPelajaran = $jadwals->first()->guruMataPelajaran->mataPelajaran;
@@ -74,6 +79,7 @@ class MataPelajaranStatsOverview extends BaseWidget
             return []; // Return empty array to prevent errors
         }
     }
+
 
     public function kelolaJadwal($slugGuruMapel)
     {
