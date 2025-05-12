@@ -117,26 +117,25 @@ class ListRekapNilai extends Page
                 $query->where('id_siswa', $siswa->id);
             }
         ])->get();
-        
+
         $totalNilaiTugasSiswa = 0; // Default nilai 0
+
         // Cek apakah ada tugas dalam sesi ini
         if ($tugasList->isNotEmpty()) {
             foreach ($tugasList as $tugas) {
-                // Ambil data pengumpulan tugas yang terkait dengan siswa ini
+                // Ambil data pengumpulan tugas pertama yang terkait dengan siswa ini
                 $pengumpulanTugas = $tugas->pengumpulanTugas->first();
 
                 // Jika ada pengumpulan tugas dan nilainya lebih dari 0, tambahkan ke total nilai
-                if (optional($pengumpulanTugas)->nilai > 0) {
-                    $totalNilaiTugasSiswa += $pengumpulanTugas->nilai;
+                if ($pengumpulanTugas && $pengumpulanTugas->nilai > 0) {
+                    // Hanya tambahkan nilai pengumpulan pertama yang ditemukan
+                    $totalNilaiTugasSiswa = $pengumpulanTugas->nilai;
+                    break; // Keluar dari loop setelah menemukan nilai pertama
                 }
             }
 
             // Jika ada nilai tugas yang valid, return totalnya
-            if ($totalNilaiTugasSiswa > 0) {
-                return $totalNilaiTugasSiswa;
-            } else {
-                return 0;
-            }
+            return $totalNilaiTugasSiswa > 0 ? $totalNilaiTugasSiswa : 0;
         }
 
         return "tidak tersedia"; // Jika tidak ada tugas atau nilai tugas 0
@@ -150,14 +149,12 @@ class ListRekapNilai extends Page
         // Cek apakah sesi memiliki kuis
         if ($sesi->kuis->isNotEmpty()) {
             // Inisialisasi variabel untuk menyimpan nilai kuis siswa
-            $nilaiKuisSiswa = null;
+            $nilaiKuisSiswa = 0; // Default jika tidak ada nilai
 
             // Loop melalui semua kuis dalam sesi
             foreach ($sesi->kuis as $kuis) {
-                // Ambil hasil kuis untuk siswa tertentu dari data yang sudah di-eager load
-                $hasilKuis = $kuis->hasilKuis
-                    ->where('id_siswa', $siswa->id)
-                    ->first();
+                // Ambil hasil kuis pertama untuk siswa tertentu
+                $hasilKuis = $kuis->hasilKuis->where('id_siswa', $siswa->id)->first();
 
                 // Jika ditemukan hasil kuis untuk siswa, simpan nilainya
                 if ($hasilKuis) {
@@ -166,8 +163,8 @@ class ListRekapNilai extends Page
                 }
             }
 
-            // Jika ada nilai kuis yang ditemukan, kembalikan nilai tersebut, jika tidak return 0
-            return $nilaiKuisSiswa !== null ? $nilaiKuisSiswa : 0;
+            // Kembalikan nilai kuis yang ditemukan, jika tidak return 0
+            return $nilaiKuisSiswa > 0 ? $nilaiKuisSiswa : 0;
         }
 
         return "tidak tersedia"; // Jika tidak ada kuis dalam sesi ini

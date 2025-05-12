@@ -22,7 +22,8 @@
                         <td>{!! $tugas->deskripsi !!}</td>
                     </tr>
                 @endif
-                <tr>
+                @if ($tugas->deadline)
+                    <tr>
                     <td>Deadline</td>
                     <td>:</td>
                     <td>
@@ -32,6 +33,7 @@
 
                     </td>
                 </tr>
+                @endif
             </table>
         </x-filament::section>
 
