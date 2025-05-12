@@ -33,6 +33,7 @@ class GuruResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->label('Nama')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
@@ -63,6 +64,7 @@ class GuruResource extends Resource
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),

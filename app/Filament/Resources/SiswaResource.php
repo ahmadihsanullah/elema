@@ -47,13 +47,16 @@ class SiswaResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->label('Nama')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
+                    ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('password')
                     ->password()
+                    ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('jenis_kelamin')
                     ->options([
@@ -83,6 +86,7 @@ class SiswaResource extends Resource
                 Tables\Columns\TextColumn::make('nis')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('kelas.nama'),
                 Tables\Columns\TextColumn::make('kelas.angkatan.tahun'),
