@@ -13,6 +13,17 @@ class Guru extends Authenticatable
     public $incrementing = true;
     public $timestamps = false;
 
+    protected $fillable = [
+        'kode',
+        'name',
+        'email',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+    ];
+    
     // Kolom password dienkripsi
     protected $casts = [
         'password' => 'hashed',

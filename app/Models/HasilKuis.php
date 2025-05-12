@@ -8,6 +8,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class HasilKuis extends Model
 {
+     protected $fillable = [
+        'id_kuis',
+        'id_siswa',
+        'waktu_mulai',
+        'waktu_selesai',
+        'status',
+        'skor',
+        'questions',
+    ];
+
     public function kuis(): BelongsTo
     {
         return $this->belongsTo(Kuis::class, 'id_kuis', 'id');

@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class JawabanSiswa extends Model
 {
+     protected $fillable = [
+        'id_hasil_kuis',
+        'id_pertanyaan',
+        'id_jawaban',
+    ];
+
     protected $table = 'jawaban_siswa';
 
     public function hasilKuis()

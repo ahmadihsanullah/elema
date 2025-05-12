@@ -11,6 +11,12 @@ class Materi extends Model
     public $incrementing = true; 
     public $timestamps = false; 
 
+     protected $fillable = [
+        'judul',
+        'deskripsi',
+        'id_sesi_belajar',
+    ];
+
     public function sesiBelajar(): BelongsTo
     {
         return $this->belongsTo(SesiBelajar::class);

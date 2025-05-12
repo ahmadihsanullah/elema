@@ -11,6 +11,11 @@ class MataPelajaran extends Model
     public $incrementing = true;
     public $timestamps = false;
 
+     protected $fillable = [
+        'nama',
+        'kode',
+    ];
+
     public function gurus(): BelongsToMany
     {
         return $this->belongsToMany(Guru::class, 'guru_mata_pelajarans', 'id_mata_pelajaran', 'id_guru');

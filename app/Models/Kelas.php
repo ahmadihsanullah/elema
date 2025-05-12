@@ -13,6 +13,13 @@ class Kelas extends Model
     public $incrementing = true;
     public $timestamps = false;
 
+     protected $fillable = [
+        'kode',
+        'nama',
+        'id_jurusan',
+        'id_angkatan',
+    ];
+
     public function jurusan(): BelongsTo
     {
         return $this->belongsTo(Jurusan::class, 'id_jurusan', 'id');

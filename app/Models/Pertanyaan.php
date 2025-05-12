@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pertanyaan extends Model
 {
+    protected $fillable = [
+        'id_kuis',
+        'pertanyaan',
+        'bobot',
+    ];
+    
     public function kuis(): BelongsTo{
         return $this->belongsTo(Kuis::class, 'id_kuis', 'id');
     }

@@ -11,6 +11,13 @@ class JadwalPelajaran extends Model
     public $incrementing = true; // Menggunakan auto-increment untuk kolom 'id'
     public $timestamps = false;
 
+    protected $fillable = [
+        'id_guru_mata_pelajaran',
+        'id_kelas',
+        'id_tahun_pelajaran',
+        'hari',
+    ];
+    
     /**
      * Relationship to Kelas
      */

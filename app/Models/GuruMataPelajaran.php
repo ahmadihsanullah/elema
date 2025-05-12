@@ -14,6 +14,12 @@ class GuruMataPelajaran extends Model
     public $incrementing = true; // Menggunakan auto-increment untuk kolom 'id'
     public $timestamps = false; 
 
+    protected $fillable = [
+        'id_guru',
+        'id_mata_pelajaran',
+        'slug',
+    ];
+
     public static function boot()
     {
         parent::boot();

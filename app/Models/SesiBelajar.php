@@ -11,6 +11,12 @@ use Illuminate\Support\Str;
 
 class SesiBelajar extends Model
 {
+    protected $fillable = [
+        'judul',
+        'slug',
+        'id_guru_mata_pelajaran',
+    ];
+    
     protected $primaryKey = 'id'; 
     public $incrementing = true; 
 

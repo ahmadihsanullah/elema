@@ -13,6 +13,10 @@ class Siswa extends Authenticatable
     public $incrementing = true;
     public $timestamps = false;
 
+    protected $fillable = [
+        'nis', 'name', 'email', 'password', 'jenis_kelamin', 'id_kelas',
+    ];
+
     protected $casts = [
         'password' => 'hashed',
     ];

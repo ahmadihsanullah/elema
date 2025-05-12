@@ -11,6 +11,11 @@ class Jurusan extends Model
     public $incrementing = true; 
     public $timestamps = false; 
 
+    protected $fillable = [
+        'nama',
+        'kode',
+    ];
+
     public function kelas(): HasMany{
         return $this->hasMany(Kelas::class, 'id_jurusan', 'id');
     }

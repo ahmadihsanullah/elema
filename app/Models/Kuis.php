@@ -12,6 +12,19 @@ use Illuminate\Support\Str;
 class Kuis extends Model
 {
 
+     protected $fillable = [
+        'judul',
+        'deskripsi',
+        'aktif',
+        'durasi',
+        'waktu_mulai',
+        'waktu_selesai',
+        'acak_soal',
+        'nilai_minimal',
+        'slug',
+        'id_guru',
+    ];
+    
     public static function boot()
     {
         parent::boot();

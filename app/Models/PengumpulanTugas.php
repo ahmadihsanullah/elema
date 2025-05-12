@@ -12,6 +12,13 @@ use Illuminate\Support\Str;
 
 class PengumpulanTugas extends Model
 {
+    protected $fillable = [
+        'id_tugas',
+        'id_siswa',
+        'nilai',
+        'slug',
+    ];
+    
     public static function boot()
     {
         parent::boot();

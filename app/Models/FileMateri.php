@@ -11,6 +11,13 @@ class FileMateri extends Model
     public $incrementing = true; 
     public $timestamps = false; 
 
+    protected $fillable = [
+        'nama',
+        'file',
+        'id_sesi_belajar',
+    ];
+
+
     public function sesiBelajar(): BelongsTo{
         return $this->belongsTo(SesiBelajar::class);
     }

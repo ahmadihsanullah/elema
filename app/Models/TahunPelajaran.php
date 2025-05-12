@@ -11,6 +11,11 @@ class TahunPelajaran extends Model
     public $incrementing = true; 
     public $timestamps = false; 
 
+    protected $fillable = [
+        'nama', 'aktif',
+    ];
+
+
     public function jadwalPelajaran(): HasMany{
         return $this->hasMany(JadwalPelajaran::class,'id_tahun_pelajaran','id');
     }
