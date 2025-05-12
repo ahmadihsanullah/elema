@@ -12,9 +12,9 @@ class StatsOverview extends BaseWidget
     {
         return [
             Stat::make('Panduan Aplikasi',false)
-            ->icon('heroicon-o-book-open')
-            ->url(Storage::url('panduan/admin.pdf'), true)
-            ->color('primary')
+                ->icon('heroicon-o-book-open')
+                ->url(route('panduan-admin'), true)
+                ->color('primary')
         ];
     }
 

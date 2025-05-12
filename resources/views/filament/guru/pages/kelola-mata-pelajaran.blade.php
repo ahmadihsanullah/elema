@@ -3,18 +3,26 @@
         <x-slot name="heading">
             {{ $mataPelajaran }}
         </x-slot>
+        <x-slot name="headerEnd">
+            <x-filament::link href="{{ route('panduan-rekap-nilai') }}" icon="heroicon-m-information-circle" color="info"
+                tag="a" target="_blank" rel="noopener noreferrer">
+                Info Rekap Nilai!
+            </x-filament::link>
 
+        </x-slot>
         @foreach ($kelas as $k)
             <div class="mb-2">
                 <a href="{{ route('filament.guru.pages.list-rekap-nilai.{slug}', ['slug' => $slugGuruMapel, 'kelas' => $k['id_kelas']]) }}"
                     target="_blank" class="filament-link">
-                    
-                        <button type="button" class="text-sm text-gray-600 inline-flex items-center space-x-2">
-                            <svg class="heroicon-m-window h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h12a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6z" />
-                            </svg>
-                            <span>Rekap Nilai - {{ $k['nama_kelas'] }}</span>
-                        </button>
+
+                    <button type="button" class="text-sm text-gray-600 inline-flex items-center space-x-2">
+                        <svg class="heroicon-m-window h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor" aria-hidden="true">
+                            <path
+                                d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h12a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6z" />
+                        </svg>
+                        <span>Rekap Nilai - {{ $k['nama_kelas'] }}</span>
+                    </button>
                 </a>
             </div>
         @endforeach
