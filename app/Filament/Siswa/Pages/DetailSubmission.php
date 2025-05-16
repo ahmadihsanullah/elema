@@ -7,6 +7,7 @@ use App\Models\PengumpulanTugas;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
+use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -51,26 +52,43 @@ class DetailSubmission extends Page implements HasTable
                     FileUpload::make('file')
                         ->required()
                         ->multiple()
-                ]),
+                        ->maxFiles(2048)
+                        ->helperText('Ukuran maksimal file 2MB per file.')
+                ])
+                ,
         ];
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->query(fn () => FilePengumpulanTugas::where('pengumpulan_tugas_id', $this->submission->id))
+            ->query(fn() => FilePengumpulanTugas::where('pengumpulan_tugas_id', $this->submission->id))
             ->columns([
                 TextColumn::make('nama_file')
-                    ->url(fn ($record) => Storage::url($record->file)) // Membuat link ke file
+                    ->url(fn($record) => Storage::url($record->file)) // Membuat link ke file
                     ->openUrlInNewTab(),
             ])
             ->actions([
-                \Filament\Tables\Actions\DeleteAction::make(),
-
+                \Filament\Tables\Actions\DeleteAction::make()
+                    ->action(function (FilePengumpulanTugas $record) {
+                        Storage::disk('public')->delete($record->file); // Hapus file dari storage
+                        $record->delete(); // Hapus record dari database
+                        Notification::make()
+                            ->title('File berhasil dihapus')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->action(function (\Illuminate\Support\Collection $records) {
+                            foreach ($records as $record) {
+                                Storage::disk('public')->delete($record->file);
+                                $record->delete();
+                            }
+                        })
                         ->requiresConfirmation()
                         ->label('Hapus File'),
                 ])
@@ -81,7 +99,6 @@ class DetailSubmission extends Page implements HasTable
     {
         $this->validate([
             'file' => 'required',
-            'file.*' => 'file|mimes:pdf,jpg,png,jpeg', // Validasi setiap file (optional)
         ]);
 
         $filePaths = []; // Array untuk menyimpan path file yang berhasil disimpan
@@ -102,9 +119,9 @@ class DetailSubmission extends Page implements HasTable
                 ];
 
                 // Hapus file sementara setelah upload selesai
-            if (file_exists($file->getRealPath())) {
-                unlink($file->getRealPath());
-            }
+                if (file_exists($file->getRealPath())) {
+                    unlink($file->getRealPath());
+                }
             }
         }
         $this->submission->update();
@@ -126,8 +143,9 @@ class DetailSubmission extends Page implements HasTable
 
     public function backToSubmission()
     {
-        return redirect()->route('filament.siswa.pages.my-courses.session.{slug}',
-             ['slug' => $this->slugSession]
+        return redirect()->route(
+            'filament.siswa.pages.my-courses.session.{slug}',
+            ['slug' => $this->slugSession]
         );
 
     }

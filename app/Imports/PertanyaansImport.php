@@ -4,9 +4,12 @@ namespace App\Imports;
 
 use App\Models\Jawaban;
 use App\Models\Pertanyaan;
+use DB;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class PertanyaansImport implements ToModel
+class PertanyaansImport implements ToModel, WithChunkReading, WithBatchInserts
 {
     private $idKuis;
     public function __construct($idKuis)
@@ -20,40 +23,53 @@ class PertanyaansImport implements ToModel
      */
     public function model(array $row)
     {
-        // Membuat Pertanyaan baru
-        $pertanyaan = Pertanyaan::create([
-            'id_kuis' => $this->idKuis, // Relasi ke id_kuis
-            'pertanyaan' => $row[0], // Kolom pertama sebagai pertanyaan
-            'bobot' => $row[1],      // Kolom kedua sebagai bobot
-        ]);
-
-        // Memproses jawaban dan status benar/salah
-        $jawabanDanStatus = [];
-        for ($i = 2; $i <= count($row) - 1; $i += 2) {
-            $jawaban = $row[$i];
-            $statusBenar = $row[$i + 1]; // Pastikan bahwa $data[$i + 1] adalah 0 atau 1
-
-            $jawabanDanStatus[] = [
-                'jawaban' => $jawaban,
-                'jawaban_benar' => $statusBenar // Pastikan status benar disimpan sebagai integer
-            ];
-        }
-        // Simpan ke database
-        foreach ($jawabanDanStatus as $item) {
-            Jawaban::create([
-                'id_pertanyaan' => $pertanyaan->id,  // Id pertanyaan yang terkait
-                'jawaban' => $item['jawaban'],     // Isi jawaban
-                'jawaban_benar' => $item['jawaban_benar'], // 0 atau 1, apakah jawaban benar?
+        DB::beginTransaction();
+        try {
+            // Buat pertanyaan baru
+            $pertanyaan = Pertanyaan::create([
+                'id_kuis' => $this->idKuis,
+                'pertanyaan' => $row[0] ?? null,
+                'bobot' => $row[1] ?? 0,
             ]);
+
+            // Simpan jawaban dan status benar
+            $jawabanDanStatus = [];
+            for ($i = 2; $i < count($row); $i += 2) {
+                $jawaban = $row[$i] ?? null;
+                $statusBenar = isset($row[$i + 1]) ? (int)$row[$i + 1] : 0;
+
+                if ($jawaban === null || $jawaban === '') {
+                    continue;
+                }
+
+                $jawabanDanStatus[] = [
+                    'jawaban' => $jawaban,
+                    'jawaban_benar' => $statusBenar,
+                ];
+            }
+            // Simpan jawaban ke dalam database
+            foreach ($jawabanDanStatus as $item) {
+                Jawaban::create([
+                    'id_pertanyaan' => $pertanyaan->id,
+                    'jawaban' => $item['jawaban'],
+                    'jawaban_benar' => $item['jawaban_benar'],
+                ]);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new \Exception('Error importing data: ' . $e->getMessage());
         }
     }
-    // Fungsi untuk membuat jawaban
-    protected function createJawaban($pertanyaan, $jawaban, $isCorrect)
+
+    public function chunkSize(): int
     {
-        Jawaban::create([
-            'id_pertanyaan' => $pertanyaan->id,  // Relasi ke id_pertanyaan
-            'jawaban' => $jawaban,                // Isi jawaban
-            'jawaban_benar' => $isCorrect, // Apakah jawaban benar?
-        ]);
+        return 10;
+    }
+
+    public function batchSize(): int
+    {
+        return 10;
     }
 }

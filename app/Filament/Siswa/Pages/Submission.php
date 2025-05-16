@@ -75,6 +75,8 @@ class Submission extends Page
                     FileUpload::make('file')
                         ->required()
                         ->multiple()
+                        ->maxFiles(2048)
+                        ->helperText('Ukuran maksimal file 2MB per file.')
                 ]),
         ];
     }
@@ -83,7 +85,6 @@ class Submission extends Page
     {
         $this->validate([
             'file' => 'required',
-            'file.*' => 'file|mimes:pdf,jpg,png,jpeg', // Validasi setiap file (optional)
         ]);
 
         $filePaths = []; // Array untuk menyimpan path file yang berhasil disimpan

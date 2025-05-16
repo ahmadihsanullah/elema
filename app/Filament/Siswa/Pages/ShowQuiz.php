@@ -79,7 +79,7 @@ class ShowQuiz extends Page implements Forms\Contracts\HasForms
                         ->schema([
                                     Forms\Components\Placeholder::make('pertanyaan')
                                         ->label('')
-                                        ->content($soal['pertanyaan']),
+                                        ->content(new \Illuminate\Support\HtmlString($soal['pertanyaan'])),
                                     Forms\Components\Radio::make('jawaban.' . $index)
                                         ->label('Pilih jawaban:')
                                         ->options(collect($soal['jawabans'])->pluck('jawaban', 'id')->toArray())

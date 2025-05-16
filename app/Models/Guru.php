@@ -1,8 +1,6 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -20,10 +18,6 @@ class Guru extends Authenticatable
         'password',
     ];
 
-    protected $hidden = [
-        'password',
-    ];
-    
     // Kolom password dienkripsi
     protected $casts = [
         'password' => 'hashed',

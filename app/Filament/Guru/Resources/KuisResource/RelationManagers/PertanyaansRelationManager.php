@@ -6,7 +6,9 @@ use App\Filament\Guru\Resources\PertanyaanResource;
 use App\Filament\Imports\PertanyaanImporter;
 use App\Imports\PertanyaansImport;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -24,13 +26,17 @@ class PertanyaansRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('pertanyaan')
-                    ->required()
-                    ->maxLength(255)
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('bobot')
-                    ->required(),
-            ]);
+                Card::make()->schema([
+                    RichEditor::make('pertanyaan')
+                        ->required()
+                        ->disableToolbarButtons([
+                            'attachFiles',
+                        ]),
+                    Forms\Components\TextInput::make('bobot')
+                        ->required(),
+                ])
+            ])
+        ;
     }
 
     public function table(Table $table): Table
@@ -38,7 +44,9 @@ class PertanyaansRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('pertanyaan')
             ->columns([
-                Tables\Columns\TextColumn::make('pertanyaan'),
+                Tables\Columns\TextColumn::make('pertanyaan')
+                    ->formatStateUsing(fn(string $state) => strip_tags($state)) // hilangkan tag HTML
+                    ->limit(50), // jika ingin potong teks panjang,
                 Tables\Columns\TextColumn::make('bobot')
             ])
             ->filters([
@@ -84,7 +92,10 @@ class PertanyaansRelationManager extends RelationManager
                             ->disk('public')
                             ->visibility('public')
                             ->label(new HtmlString('<a href="' . route('template-soal') . '" target="_blank" type="button" style="background-color: orange; color: white; padding: 2px; border-radius: 5%;">Download Format Soal</a>'))
-                            ->acceptedFileTypes(['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                            ->acceptedFileTypes([
+                                'application/vnd.ms-excel', // .xls
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+                            ])
                             ->required(),
                     ])
             ])

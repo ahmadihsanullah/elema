@@ -62,7 +62,7 @@
                                 </x-filament::button>
                             </x-slot>
 
-                            <p>Apakah kamu yakin ingin menghapus tugas ini?</p>
+                            <p>Apakah kamu yakin ingin menghapus pengumpulan tugas ini?</p>
 
                             <!-- Button to confirm task deletion -->
                             <x-filament::button wire:click="deleteSubmission" color="danger">

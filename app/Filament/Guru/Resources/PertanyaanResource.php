@@ -7,6 +7,8 @@ use App\Filament\Guru\Resources\PertanyaanResource\RelationManagers;
 use App\Filament\Guru\Resources\PertanyaanResource\RelationManagers\JawabansRelationManager;
 use App\Models\Pertanyaan;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,7 +24,8 @@ class PertanyaanResource extends Resource
 
     protected static bool $shouldRegisterNavigation = false;
 
-    public static function canCreate(): bool {
+    public static function canCreate(): bool
+    {
         return false;
     }
 
@@ -30,16 +33,21 @@ class PertanyaanResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('id_kuis')
-                ->label('kuis')
-                ->relationship('kuis', 'judul')
-                ->required(),
-                Forms\Components\TextInput::make('pertanyaan')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('bobot')
-                    ->required()
-                    ->numeric(),
+                Card::make()->schema([
+                    Forms\Components\Select::make('id_kuis')
+                        ->label('kuis')
+                        ->relationship('kuis', 'judul')
+                        ->required(),
+                    RichEditor::make('pertanyaan')
+                        ->required()
+                        ->disableToolbarButtons([
+                            'attachFiles',
+                        ]),
+                    Forms\Components\TextInput::make('bobot')
+                        ->required()
+                        ->numeric(),
+                ])
+
             ]);
     }
 
