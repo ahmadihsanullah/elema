@@ -21,8 +21,15 @@ class MataPelajaranStatsOverview extends BaseWidget
             // Ambil tahun pelajaran aktif
             $tahunPelajaranAktif = TahunPelajaran::where('aktif', true)->first();
 
+            // Kalau tidak ada tahun pelajaran aktif, tampilkan notifikasi lalu hentikan proses
             if (!$tahunPelajaranAktif) {
-                throw new \Exception("Tahun pelajaran aktif tidak ditemukan!");
+                Notification::make()
+                    ->title('Tahun Pelajaran Belum Diatur')
+                    ->body('Silakan hubungi admin untuk mengatur jadwal pelajaran.')
+                    ->danger()
+                    ->send();
+
+                return [];
             }
 
             // Cek apakah data sudah ada di cache
@@ -76,7 +83,7 @@ class MataPelajaranStatsOverview extends BaseWidget
                 ->danger()
                 ->send();
 
-            return []; // Return empty array to prevent errors
+            return [];
         }
     }
 

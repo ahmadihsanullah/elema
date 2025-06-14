@@ -18,7 +18,7 @@ class Guru extends Authenticatable
         'password',
     ];
 
-    // Kolom password dienkripsi
+    // Kolom password dienkripsi$
     protected $casts = [
         'password' => 'hashed',
     ];

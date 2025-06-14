@@ -28,7 +28,11 @@ class TugasRelationManager extends RelationManager
                         ->required()
                         ->maxLength(255),
                     Forms\Components\RichEditor::make('deskripsi')
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->disableToolbarButtons([
+                            'attachFiles',
+                            'attachImages'
+                        ]),
                     Forms\Components\DateTimePicker::make('deadline')
                 ])
             ]);

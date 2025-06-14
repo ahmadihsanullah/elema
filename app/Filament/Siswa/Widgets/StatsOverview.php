@@ -19,7 +19,14 @@ class StatsOverview extends BaseWidget
 
         $tahunPelajaranAktif = TahunPelajaran::where('aktif', true)->first();
 
+        // Tangani jika tahun pelajaran belum diatur
         if (!$tahunPelajaranAktif) {
+            \Filament\Notifications\Notification::make()
+                ->title('Tahun Pelajaran Belum Diatur')
+                ->body('Admin akan mengatur jadwal pelajaran segera.')
+                ->danger()
+                ->send();
+
             return [];
         }
 
