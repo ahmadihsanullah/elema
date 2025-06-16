@@ -15,6 +15,7 @@ use Filament\Pages\Concerns\InteractsWithFormActions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Checkbox;
+use Illuminate\Support\Str;
 
 class GuruMataPelajaran extends Page implements HasTable
 {
@@ -102,7 +103,14 @@ class GuruMataPelajaran extends Page implements HasTable
             $this->validate([
                 'mataPelajaran.*' => 'exists:mata_pelajarans,id'
             ]);
-            $guru->mataPelajarans()->syncWithoutDetaching($this->mataPelajaran);
+            // Buat array dengan nilai slug untuk setiap mata pelajaran
+            $mataPelajaranWithSlug = [];
+            foreach ($this->mataPelajaran as $mataPelajaranId) {
+                $mataPelajaranWithSlug[$mataPelajaranId] = ['slug' => Str::random(10)];
+            }
+
+            // Simpan dengan slug ke tabel pivot
+    $guru->mataPelajarans()->syncWithoutDetaching($mataPelajaranWithSlug);
         }
         
         // Hapus mata pelajaran yang dipilih

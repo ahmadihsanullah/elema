@@ -26,7 +26,7 @@ class GuruMataPelajaran extends Model
 
         static::creating(function ($model) {
             // Mengisi slug secara otomatis
-            $model->slug = Str::random(10);
+            $model->slug = Str::random(10) ?? Str::random(10);
         });
     }
     public function guru(): BelongsTo{

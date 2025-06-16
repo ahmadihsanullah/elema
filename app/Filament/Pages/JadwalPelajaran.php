@@ -18,6 +18,7 @@ use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class JadwalPelajaran extends Page implements HasTable
 {
@@ -218,6 +219,7 @@ class JadwalPelajaran extends Page implements HasTable
                         'id_tahun_pelajaran' => $this->tahunPelajaran,
                         'id_guru_mata_pelajaran' => $guruMataPelajaranId,
                         'hari' => $this->hari,
+                        'slug' => Str::random(10)
                     ]);
                 }
             }

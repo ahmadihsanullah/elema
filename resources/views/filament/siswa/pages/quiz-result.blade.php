@@ -29,8 +29,7 @@
             <ul class="space-y-4">
                 @foreach ($hasilKuis->kuis->pertanyaans as $pertanyaan)
                     <li class="p-4 rounded-lg shadow-sm bg-gray-100 dark:bg-gray-900">
-                        <strong
-                            class="block text-lg text-gray-900 dark:text-gray-100">{{ $pertanyaan->pertanyaan }}</strong>
+                        <span>Soal: {!! $pertanyaan->pertanyaan !!}</span>
                         @php
                             $jawabanSiswa = $hasilKuis->jawabanSiswa->where('id_pertanyaan', $pertanyaan->id)->first();
                         @endphp
@@ -38,15 +37,15 @@
                             <p class="mt-2 text-gray-900 dark:text-gray-100">Jawaban Anda: <span
                                     class="font-semibold">{{ $jawabanSiswa->jawaban->jawaban }}</span></p>
                             @if ($jawabanSiswa->jawaban->jawaban_benar)
-                                <span class="text-green-600 font-semibold">Jawaban Benar</span>
+                                <span class="text-green-600 ">Status Jawaban : Benar</span>
                             @else
-                                <span class="text-red-600 font-semibold">Jawaban Salah</span>
+                                <span class="text-red-600 ">Status Jawaban : Salah</span>
                             @endif
                         @else
                             <p class="mt-2 text-gray-900 dark:text-gray-100">Anda tidak menjawab pertanyaan ini.</p>
                         @endif
                         <div class="mt-2">
-                            <strong class="text-gray-900 dark:text-gray-100">Pilihan Jawaban:</strong>
+                            <span>Pilihan Jawaban</span>
                             <ul class="list-disc list-inside">
                                 @foreach ($pertanyaan->jawabans as $jawaban)
                                     <li
